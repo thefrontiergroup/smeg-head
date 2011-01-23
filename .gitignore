@@ -4,3 +4,4 @@ log/*.log
 tmp/**/*
 config/settings.yml
 config/database.yml
+tmp/uuid-state

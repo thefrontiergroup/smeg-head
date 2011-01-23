@@ -19,3 +19,6 @@ Rimmer::Application.config.secret_token = Settings.rails.fetch(:secret, ActiveSu
 
 # Session Configuration
 Rimmer::Application.config.session_store :cookie_store, :key => Settings.rails.fetch(:session_name, '_rimmer_session')
+
+# Setup UUID.
+UUID.state_file = Rails.root.join('tmp', 'uuid-state').to_s
