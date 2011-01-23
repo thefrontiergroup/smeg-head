@@ -7,7 +7,7 @@ describe Repository do
   end
 
   context "validations" do
-    it { should validate_presence_of :name }
+    it { should validate_presence_of :name, :owner }
   end
 
   describe "repository identifier" do
