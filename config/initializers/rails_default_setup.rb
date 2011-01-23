@@ -15,7 +15,7 @@
 # Mime::Type.register_alias "text/html", :iphone
 
 # Secret Token
-Rimmer::Application.config.secret_token = 'secret-token-here'
+Rimmer::Application.config.secret_token = Settings.rails.fetch(:secret, ActiveSupport::SecureRandom.hex(64))
 
 # Session Configuration
-Rimmer::Application.config.session_store :cookie_store, :key => '_rimmer_session'
+Rimmer::Application.config.session_store :cookie_store, :key => Settings.rails.fetch(:session_name, '_rimmer_session')
