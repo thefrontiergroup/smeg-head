@@ -13,6 +13,18 @@ gem 'youthtree-settings'
 gem 'devise'
 gem 'ydd', :require => nil
 
+group :test, :development do
+  gem 'rspec',       '~> 2.1'
+  gem 'rspec-rails', '~> 2.1'
+  gem 'machinist',   '>= 2.0.0.beta2', :require => 'machinist/active_record'
+  gem 'forgery',                       :require => 'forgery'
+  # Guard basics
+  gem 'guard', :require => nil
+  gem 'guard-rspec', :require => nil
+  gem 'guard-passenger', :require => nil
+  gem 'ruby-debug'
+end
+
 group :test do
   gem 'remarkable',              '>= 4.0.0.alpha4', :require => 'remarkable/core'
   gem 'remarkable_activerecord', '>= 4.0.0.alpha4', :require => 'remarkable/active_record'
