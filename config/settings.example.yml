@@ -1,0 +1,5 @@
+---
+default:
+  rails:
+    session_name: 'rimmer-session'
+    secret: 'a-randomly-generated-session-key-that-you-need-to-know-to-update'
