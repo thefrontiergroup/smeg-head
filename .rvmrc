@@ -1,1 +1,1 @@
-rvm use ree@rimmer --create >/dev/null 2>&1
+rvm use ree@smeg-head --create >/dev/null 2>&1

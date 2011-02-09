@@ -1,4 +1,4 @@
-Rimmer::Application.configure do
+SmegHead::Application.configure do
   config.cache_classes                              = true
   config.whiny_nils                                 = true
   config.consider_all_requests_local                = true

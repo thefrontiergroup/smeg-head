@@ -1,5 +1,5 @@
 ---
 default:
   rails:
-    session_name: 'rimmer-session'
+    session_name: 'smeg-head-session'
     secret: 'a-randomly-generated-session-key-that-you-need-to-know-to-update'

@@ -15,10 +15,10 @@
 # Mime::Type.register_alias "text/html", :iphone
 
 # Secret Token
-Rimmer::Application.config.secret_token = Settings.rails.fetch(:secret, ActiveSupport::SecureRandom.hex(64))
+SmegHead::Application.config.secret_token = Settings.rails.fetch(:secret, ActiveSupport::SecureRandom.hex(64))
 
 # Session Configuration
-Rimmer::Application.config.session_store :cookie_store, :key => Settings.rails.fetch(:session_name, '_rimmer_session')
+SmegHead::Application.config.session_store :cookie_store, :key => Settings.rails.fetch(:session_name, '_smeg_head_session')
 
 # Setup UUID.
 UUID.state_file = Rails.root.join('tmp', 'uuid-state').to_s
