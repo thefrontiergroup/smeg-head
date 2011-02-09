@@ -46,4 +46,71 @@ describe Repository do
     subject_class.slug_source.should == :name
   end
 
+  describe 'the calculated clone path' do
+
+    let(:user)       { User.make! :login => 'Archibald' }
+    let(:repository) { Repository.make! :owner => user, :name => 'Ninja Skulls of Doom' }
+
+    it 'should calculate the correct value' do
+      repository.calculated_clone_path.should == "#{user.to_param}/#{repository.to_param}"
+    end
+
+    it 'should change when we update the owner' do
+      expect do
+        repository.owner.update_attributes! :login => Forgery(:internet).user_name
+      end.to change(repository, :calculated_clone_path)
+    end
+
+  end
+
+  describe 'the clone path' do
+
+    let(:repository) { Repository.make! }
+
+    it 'should use the attribute if present' do
+      repository[:clone_path] = 'my-stored-clone-path'
+      repository.clone_path.should == 'my-stored-clone-path'
+    end
+
+    it 'should calculate a value when the real value is missing' do
+      mock(repository).calculated_clone_path { 'my-calculated-clone-path' }
+      repository[:clone_path] = nil
+      repository.clone_path.should == 'my-calculated-clone-path'
+    end
+
+    it 'should cache it on save' do
+      repository = Repository.make
+      repository[:clone_path].should be_blank
+      repository.save!
+      repository[:clone_path].should be_present
+    end
+
+  end
+
+  describe 'normalising a repository path' do
+
+    it 'should return nil for blank values' do
+      Repository.normalize_path(' ').should == nil
+      Repository.normalize_path('').should == nil
+      Repository.normalize_path('.git').should == nil
+      Repository.normalize_path('...git').should == nil
+    end
+
+    it 'should expand double dots' do
+      Repository.normalize_path('x/y/../z').should == 'x/z'
+      Repository.normalize_path('../a.git').should == 'a'
+      Repository.normalize_path('a/...git').should == nil
+    end
+
+    it 'should remove trailing gits' do
+      Repository.normalize_path('a.git').should == 'a'
+      Repository.normalize_path('a/b.git').should == 'a/b'
+    end
+
+    it 'should remove multiple slashes' do
+      Repository.normalize_path('a//b').should == 'a/b'
+    end
+
+  end
+
 end

@@ -6,13 +6,22 @@ class Repository < ActiveRecord::Base
 
   is_sluggable :name
 
-  before_save :cache_clone_path
+  before_save   :cache_clone_path
+  before_create :identifier
 
   # Normalises a path, expanding .. in the path and removing
   # a trailing .git suffix. Will also remove multiple slashes from
   # the path.
   def self.normalize_path(path)
-    File.expand_path(path.to_s, '/').gsub(/\.git$/, '')[1..-1]
+    return if path.blank?
+    # Remove .. and slashes where possible
+    expanded = File.expand_path(path.to_s, '/')
+    # Now remove the .git and the prefixed slash
+    stripped = expanded.gsub(/\.git$/, '').gsub(/^\//, '')
+    # If we still have a .. here, we know something is up
+    return nil if stripped.include?('..')
+    # Oh look, a name!
+    stripped.presence
   end
 
   # Finds a repository from a given path, taking into account things like
@@ -45,6 +54,7 @@ class Repository < ActiveRecord::Base
   # path prefix in front of the current repositories slug.
   # @return [String] the composed clone path
   def calculated_clone_path
+    return nil if owner.blank?
     File.join owner.path_prefix, to_param
   end
 

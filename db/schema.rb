@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110209132832) do
+ActiveRecord::Schema.define(:version => 20110209134744) do
 
   create_table "repositories", :force => true do |t|
     t.string   "name",        :null => false
@@ -21,8 +21,10 @@ ActiveRecord::Schema.define(:version => 20110209132832) do
     t.string   "owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "clone_path"
   end
 
+  add_index "repositories", ["clone_path"], :name => "index_repositories_on_clone_path"
   add_index "repositories", ["owner_type", "owner_id", "cached_slug"], :name => "index_repositories_on_owner_type_and_owner_id_and_cached_slug"
 
   create_table "slugs", :force => true do |t|
