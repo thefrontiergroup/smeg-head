@@ -3,7 +3,7 @@ class CreateRepositories < ActiveRecord::Migration
     create_table :repositories do |t|
       t.string :name, :null => false
       t.text   :description
-      t.string :identifier, :null => false
+      t.string :identifier, :null => false, :unique => true
       t.string :cached_slug, :null => false
       t.belongs_to :owner, :polymorphic => true
       t.timestamps
