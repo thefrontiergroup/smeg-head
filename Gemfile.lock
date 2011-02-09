@@ -28,6 +28,7 @@ GEM
       activemodel (= 3.0.3)
       activesupport (= 3.0.3)
     activesupport (3.0.3)
+    angry_shell (0.0.1)
     arel (2.0.7)
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
@@ -48,6 +49,9 @@ GEM
       rspec (~> 2.0)
       rspec-instafail (~> 0.1.4)
       ruby-progressbar (~> 0.0.9)
+    grit (2.2.0)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
     growl (1.0.3)
     guard (0.3.0)
       open_gem (~> 1.4.2)
@@ -157,10 +161,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  angry_shell
   devise
   forgery
   formtastic (~> 1.2)
   fuubar
+  grit
   growl
   guard
   guard-passenger

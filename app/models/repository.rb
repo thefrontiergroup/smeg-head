@@ -1,3 +1,5 @@
+require 'repository_manager'
+
 class Repository < ActiveRecord::Base
 
   belongs_to :owner, :polymorphic => true
@@ -8,6 +10,9 @@ class Repository < ActiveRecord::Base
 
   before_save   :cache_clone_path
   before_create :identifier
+
+  after_create  :create_repository
+  after_destroy :cleanup_repository
 
   # Normalises a path, expanding .. in the path and removing
   # a trailing .git suffix. Will also remove multiple slashes from
@@ -62,6 +67,18 @@ class Repository < ActiveRecord::Base
   # @return [String] the current clone path
   def clone_path
     self[:clone_path].presence || calculated_clone_path
+  end
+
+  def manager
+    @manager ||= RepositoryManager.new(self)
+  end
+
+  def create_repository
+    manager.create!
+  end
+
+  def cleanup_repository
+    manager.destroy!
   end
 
   protected

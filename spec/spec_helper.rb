@@ -12,4 +12,9 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.include MiscHelpers
   config.before(:each) { Machinist.reset_before_test }
+
+  config.after(:each) do
+    FileUtils.rm_rf(RepositoryManager.base_path) if defined?(RepositoryManager)
+  end
+
 end

@@ -13,6 +13,9 @@ gem 'youthtree-settings'
 gem 'devise'
 gem 'ydd', :require => nil
 
+gem 'angry_shell'
+gem 'grit'
+
 group :test, :development do
   gem 'rspec',       '~> 2.1'
   gem 'rspec-rails', '~> 2.1'
