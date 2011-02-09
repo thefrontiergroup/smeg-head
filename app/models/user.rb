@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
 
   is_sluggable :login
 
+  has_many :repositories, :as => :owner
+
   alias path_prefix to_param
 
 end
