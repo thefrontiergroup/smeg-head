@@ -40,4 +40,10 @@ describe Repository do
 
   end
 
+  it_should_behave_like 'a sluggable model'
+
+  it 'should use the correct slug source' do
+    subject_class.slug_source.should == :identifier
+  end
+
 end

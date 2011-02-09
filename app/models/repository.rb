@@ -4,6 +4,8 @@ class Repository < ActiveRecord::Base
 
   validates :name, :owner, :presence => true
 
+  is_sluggable :identifier
+
   # Finds a repository from a given path, taking into account things like
   # the parent hierarchy. Returns nil when the given repository is not found.
   # @param [String] path the path to the repository
