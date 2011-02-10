@@ -57,6 +57,16 @@ class RepositoryManager
     Grit::Repo.new path
   end
   
+  # Starts receive-pack in the repository.
+  def receive_pack!
+    exec_in_repo! "git-receive-pack", path.to_s
+  end
+  
+  # Starts upload-pack inside the repository.
+  def upload_pack!
+    exec_in_repo! "git-upload-pack", path.to_s
+  end
+  
   private
   
   # Shell Code taken from stuff I (Darcy) wrote for RVM
@@ -89,10 +99,23 @@ class RepositoryManager
     "#{command} #{escape_arguments(args)}".strip
   end
   
+  # Runs a command inside the git repository, using exec and git-shell to avoid 
+  # the most common security attacks.
+  def exec_in_repo!(*args)
+    command = build_command('git-shell', '-c', *args)
+    Dir.chdir path
+    logger.info "Executing command in repo: \"#{command}\" in #{Dir.pwd}"
+    exec *args
+  end
+  
   def cmd(*args, &blk)
     options = args.extract_options!
     command = build_command(*args)
     AngryShell::Shell.new(options.merge(:cmd => command), &blk)
+  end
+  
+  def logger
+    Rails.logger
   end
   
 end
