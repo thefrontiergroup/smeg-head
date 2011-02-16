@@ -15,3 +15,7 @@ To get started, it should be as simple as running:
     cp config/settings{.example,}.yml
     rake db:setup
     ./script/server
+    
+## Extra Documentation
+
+For extra documentation, including design decisions, look in the docs directory of this repository.
