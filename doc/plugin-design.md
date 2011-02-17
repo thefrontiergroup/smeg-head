@@ -7,7 +7,7 @@ plugins can hook in to).
 ## What is in a plugin?
 
 Since Smeg Head is built upon Rails 3, Smeg Head plugins are just special forms of the new
-[Rails Engine]() implementations. This means that you get access to a bunch of nice helpers out of the
+[Rails Engine](#todo-link-here) implementations. This means that you get access to a bunch of nice helpers out of the
 box (namely, easy support for initializers, app-level extensions and the like) with added syntactic
 sugar for registering on events and the like.
 
