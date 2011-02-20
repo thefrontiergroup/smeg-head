@@ -25,8 +25,12 @@ module SmegHead
         @_subscribe_keys
       end
 
-      def invoke!(subkeys, context)
+      def call(context)
         @callback.call context
+      end
+
+      def to_proc
+        proc { |ctx| call ctx }
       end
 
     end
@@ -41,11 +45,13 @@ module SmegHead
         @subkeys    = {}
       end
 
-      def invoke!(path_parts, context = {})
-        @subscriptions.each { |subscription| subscription.invoke! path_parts.dup, context  }
+      def call(context = {})
+        path_parts  = context[:path_parts].dup
+        @subscriptions.each { |subscription| subscription.call context }
         if (subkey = @subkeys[path_parts.shift])
-          subkey.invoke! path_parts, context, parts
+          subkey.call context.merge(:path_parts => path_parts)
         end
+        true
       end
 
       # Adds a new subscription to this subscriptions list.
@@ -134,7 +140,22 @@ module SmegHead
     # @example Publishing a message
     #   hub.publish 'hello:world', :hello => 'world'
     def publish(path, context = {})
-      subscriptions.invoke! path.split(":"), context
+      path_parts = path.split(":")
+      context = merge_path_context path_parts, context
+      # Actually handle publishing the subscription
+      subscriptions.call context.merge :path_parts => path_parts, :full_path => path
+    end
+
+    def merge_path_context(path_parts, context)
+      if context.has_key?(:path_keys)
+        path_keys = Array(con  text.delete(:path_keys))
+        context   = context.dup
+        path_keys.each_with_index do |part, idx|
+          next if part.blank? or part.to_s == "_"
+          context[part.to_sym] = path_parts[idx]
+        end
+      end
+      context
     end
 
   end
