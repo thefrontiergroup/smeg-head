@@ -24,8 +24,7 @@ group :test, :development do
   # Guard basics
   gem 'guard', :require => nil
   gem 'guard-rspec', :require => nil
-  gem 'guard-passenger', :require => nil
-  gem 'ruby-debug'
+  gem 'ruby-debug19'
 end
 
 group :test do

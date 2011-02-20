@@ -18,4 +18,4 @@ To get started, it should be as simple as running:
     
 ## Extra Documentation
 
-For extra documentation, including design decisions, look in the docs directory of this repository.
+For extra documentation, including design decisions, look in the `design-docs` directory of this repository.

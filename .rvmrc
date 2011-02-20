@@ -1,1 +1,1 @@
-rvm use ree@smeg-head --create >/dev/null 2>&1
+rvm use 1.9.2-p136@smeg-head --create >/dev/null 2>&1
