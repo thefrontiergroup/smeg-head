@@ -35,8 +35,8 @@ class Repository < ActiveRecord::Base
   # @return [nil,Repository] the repository (if found, otherwise nil)
   def self.from_path(path)
     normalized_path = normalize_path(path)
-    return nil if normalize_path.blank?
-    where(:clone_path => normalize_path).first
+    return nil if normalized_path.blank?
+    where(:clone_path => normalized_path).first
   end
 
   # Prevents assignment of identifier directly to avoid people changing their repository uuid.

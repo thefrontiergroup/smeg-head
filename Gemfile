@@ -38,7 +38,7 @@ group :test do
   gem 'rcov', :require => nil
   gem 'syntax', :require => nil
   gem 'fuubar'
-  gem 'simplecov'
+  gem 'simplecov' unless RUBY_VERSION < '1.9'
 end
 
 group :test_mac do
