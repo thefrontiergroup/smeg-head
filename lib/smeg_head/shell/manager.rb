@@ -18,6 +18,7 @@ module SmegHead
         prepare_user
         unpack_command
         prepare_repository
+        setup_environment
         execute_command!
       rescue Error => e
         $stderr.puts e.message
@@ -27,9 +28,9 @@ module SmegHead
       def prepare_user
         @user_id = @arguments[0].presence
         raise Error, "Smeg Head was configured incorrectly for this user" unless user_id
-        debug "Attempting User.find(#{user_id.inspect})"
+        debug "Attempting User.find(#{user_id.to_i.inspect})"
         catching_not_found "Unable to find the user for your ssh key - Please check your account is configured correctly" do
-          @user = User.find(@user_name.to_i)
+          @user = User.find(user_id.to_i)
         end
       end
 
@@ -50,10 +51,16 @@ module SmegHead
         debug "Checking permissions"
       end
 
+      def setup_environment
+        current_context_env.each_pair do |k, v|
+          ENV["SH_" + k.to_s.upcase] = v.to_s
+        end
+      end
+
       def execute_command!
         manager = repository.manager
         case command.verb
-        when :read  then manager.upload_path!
+        when :read  then manager.upload_pack!
         when :write then manager.receive_pack!
         else raise Error, "Unknown repository verb of #{command.verb}"
         end
@@ -69,6 +76,15 @@ module SmegHead
 
       def debug(message)
         $stderr.puts "[DEBUGGING] #{message}"
+      end
+
+      def current_context_env
+        {
+          :repository_identifier    => repository.identifier,
+          :original_repository_path => command.identifier,
+          :current_user_id          => user.id,
+          :permissions              => "TODO: Implement user permissions"
+        }
       end
 
     end

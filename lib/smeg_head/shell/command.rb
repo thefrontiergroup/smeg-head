@@ -5,8 +5,8 @@ module SmegHead
     class Command
 
       VALID_COMMANDS = {
-        :read  => /\Agit[ -]receive-pack\Z/,
-        :write => /\Agit[ -]upload-pack\Z/
+        :read  => /\Agit[ -]upload-pack\Z/,
+        :write => /\Agit[ -]receive-pack\Z/
       }
 
       attr_reader :command, :identifier, :raw

@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
-require File.expand_path('../../config/application',  __FILE__)
+current_file = __FILE__
+current_file = File.readlink(current_file) while File.symlink?(current_file)
+require File.expand_path('../../config/application',  current_file)
+
 SmegHead::Application.initialize!
 
-require 'smeg_head/shell/manager'
-
+require 'smeg_head/shell'
 SmegHead::Shell::Manager.start

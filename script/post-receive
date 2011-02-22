@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+require 'yaml'
+
+def env(name)
+  ENV['SH_' + name.to_s.upcase]
+end
+
+repository_identifier = env(:repository_identifier)
+current_user_id       = env(:current_user_id)
+permissions           = env(:permissions).to_s.split(",")
+
+STDIN.each_line do |line|
+  old_ref, new_ref, full_ref = line.strip.split(" ", 3)
+  details = {
+    "old_ref"               => old_ref,
+    "new_ref"               => new_ref,
+    "full_ref"              => full_ref,
+    "repository_identifier" => repository_identifier,
+    "current_user_id"       => current_user_id
+  }
+  puts details.to_yaml
+end
