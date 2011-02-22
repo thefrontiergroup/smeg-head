@@ -2,26 +2,6 @@
 require File.expand_path('../../config/application',  __FILE__)
 SmegHead::Application.initialize!
 
-require 'shellwords'
-original_command_parts = Shellwords.shellwords ENV['SSH_ORIGINAL_COMMAND']
+require 'smeg_head/shell/manager'
 
-command    = original_command_parts.shift
-repository = original_command_parts.shift
-
-def die(error)
-  warn error
-  exit 1
-end
-
-repo = Repository.from_path(repository) or die "No repository named '#{repository}' found."
-
-case command
-when /^git[- ]upload-pack$/
-  repo.manager.upload_pack!
-when /^git[- ]receive-pack$/
-  repo.manager.receive_pack!
-else
-  die "Unrecognized command."
-end
-
-die "Ninja attack"
+SmegHead::Shell::Manager.start
