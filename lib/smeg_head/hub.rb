@@ -5,13 +5,20 @@ module SmegHead
 
   class << self
 
-    attr_writer :hub
-
     # Gets the current application wide hub, initializing
     # a new one if it hasn't been set yet.
     # @return [Hub] the subscription hub
     def hub
-      @hub ||= Hub.new
+      @hub ||= Hub.new.tap { |h| h.primary = true }
+    end
+
+    def hub=(value)
+      old_hub = @hub
+      @hub = value.presence
+      if old_hub != @hub
+        old_hub.primary = false if old_hub
+        @hub.primary    = true  if @hub
+      end
     end
 
     # We delegate the subscription management methods to the default hub.
@@ -29,6 +36,7 @@ module SmegHead
     # Initializes the given hub with an empty set of subscriptions.
     def initialize
       @subscriptions = Subscriptions.new
+      @primary       = false
     end
 
     # Subscribes to a given path string and either a proc callback or
@@ -72,6 +80,18 @@ module SmegHead
       context = merge_path_context path_parts, context
       # Actually handle publishing the subscription
       subscriptions.call context.merge :path_parts => path_parts, :full_path => path
+    end
+
+    def primary?
+      !!@primary
+    end
+
+    def primary=(value)
+      value = !!value
+      if value != @value
+        @value = value
+        ActiveSupport.run_load_hooks :smeg_head_hub, self
+      end
     end
 
     private

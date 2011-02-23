@@ -24,6 +24,20 @@ describe SmegHead::Hub do
     proc { |ctx| ctx_from_proc << ctx }
   end
 
+  describe 'the primary hub' do
+
+    it 'should let you query if something is the primary hub'
+
+    it 'should run the load hook when the hub is changed'
+
+    it 'should unset it when changing the hub'
+
+    it 'should set it to primary when setting it to the hub value'
+
+    it 'always set the default to be primary'
+
+  end
+
   describe '#subscribe' do
 
     it 'should let you subscribe to a top level item'
