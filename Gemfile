@@ -15,6 +15,7 @@ gem 'ydd', :require => nil
 
 gem 'angry_shell'
 gem 'grit'
+gem 'msgpack-rpc'
 
 group :test, :development do
   gem 'rspec',       '~> 2.1'
