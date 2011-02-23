@@ -1,5 +1,7 @@
 # Repository-level permissions
 
+## General Details
+
 Smeg Head has an ACL-style permissions implementation built on four operations
 matching groups of wild cards (tags and branches). Namely, it supports the following
 operations:
@@ -16,11 +18,11 @@ Which can match ones of:
 
 Also, the special case `refs` which matches tags and branches.
 
-## Verbs
+### Verbs
 
 Verb permissions are either `allow` or `deny`.
 
-## Permission Scoping
+### Permission Scoping
 
 Permissions can be scoped to:
 
@@ -30,11 +32,11 @@ Permissions can be scoped to:
 
 In that order.
 
-## Matching Branches
+### Matching Branches
 
 Finally, the target of it is matched on a wildcard / glob basis.
 
-## Examples
+### Examples
 
     allow create    from user Sutto to branch *
     allow push-to   from user Sutto to branch *
@@ -43,9 +45,9 @@ Finally, the target of it is matched on a wildcard / glob basis.
 
 This is a simple case, most repositories will default to:
 
-    allow create    from collaborators to refs *
-    allow push-to   from collaborators to refs *
-    allow pull-from from collaborators to refs *
-    allow destroy   from collaborators to refs *
+    allow create    from collaborators to all refs
+    allow push-to   from collaborators to all refs
+    allow pull-from from collaborators to all refs
+    allow destroy   from collaborators to all refs
     
 This will ultimately expressed on some model level, possibly with a custom DSL.

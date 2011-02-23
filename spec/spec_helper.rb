@@ -11,7 +11,6 @@ require 'rspec/rails'
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
-require 'smeg_head/mock_hub'
 # Use a mocked out hub.
 SmegHead.hub = SmegHead::MockHub.new
 

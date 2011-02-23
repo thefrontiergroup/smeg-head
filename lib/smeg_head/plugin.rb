@@ -14,6 +14,10 @@ module SmegHead
         end
       end
 
+      def subscriptions
+        @subscriptions ||= Hash.new { |h,j| h[k] = [] }
+      end
+
       def define_metadata_accessors(*args)
         options = args.extract_options!
         args.each do |attribute_name|
@@ -30,7 +34,10 @@ module SmegHead
         end
       end
 
-      delegate :subscribe, :unsubscribe, :to => SmegHead
+      # TODO: implement an initializer to actually handle the subscriptions.
+      def subscribe(key, object = nil, &blk)
+        subscriptions[key] << (object || blk)
+      end
 
       def extend_model(model_name, mixin)
         ActionDispatch::Callbacks.to_prepare do

@@ -1,6 +1,8 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+
+# Load the SmegHead plugin early on so it is easy to hook into it.
 require File.expand_path('../../lib/smeg_head/plugin', __FILE__)
 
 # If you have a Gemfile, require the gems listed there, including any gems
@@ -19,5 +21,9 @@ module SmegHead
 
     config.encoding = "utf-8"
     config.filter_parameters += [:password]
+
+    # Make sure we load smeg_head as early as possible.
+    config.before_initialize { require 'smeg_head/all' }
+
   end
 end
