@@ -36,8 +36,6 @@ class RepositoryManager
     return if path.exist?
     FileUtils.mkdir_p path
     in_repository do
-      # TODO: Add a way to hook into the results of creating the repository.
-      # E.g. so we can have post-create hooks.
       cmd(:git, '--bare', :init).ok?
     end
   end
