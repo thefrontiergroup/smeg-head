@@ -73,7 +73,9 @@ describe SmegHead::Plugin do
 
   describe "subscribing to events" do
 
-    it "should subscribe to events when the application is loaded"
+    it "should subscribe to events when the hub is loaded"
+
+    it "should subscribe to events when the hub is set to primary"
 
     it "should not subscribe if the hub isn't loaded"
 
