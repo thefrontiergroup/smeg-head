@@ -20,6 +20,8 @@ module SmegHead
       @_subscribe_keys
     end
 
+    # Invokes the callback, returning whatever it returns.
+    # @param [Hash] context the callback context.
     def call(context)
       @callback.call context
     end
