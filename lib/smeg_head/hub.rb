@@ -73,13 +73,14 @@ module SmegHead
     # Publishes a message to the given path and with a given hash context.
     # @param [String] path the pubsub path
     # @param [Hash{Symbol => Object}] context the message context
+    # @return [true,false] whether or not all callbacks executed successfully.
     # @example Publishing a message
     #   hub.publish 'hello:world', :hello => 'world'
     def publish(path, context = {})
       path_parts = path.split(":")
       context = merge_path_context path_parts, context
       # Actually handle publishing the subscription
-      subscriptions.call context.merge :path_parts => path_parts, :full_path => path
+      subscriptions.call(context.merge(:path_parts => path_parts, :full_path => path)) != false
     end
 
     def primary?
