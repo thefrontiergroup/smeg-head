@@ -70,6 +70,7 @@ describe SmegHead::Hub do
 
     let(:nested_a)    { subscriber_klass.new }
     let(:nested_b)    { subscriber_klass.new }
+    let(:nested_c)    { subscriber_klass.new }
     let(:top_level_a) { subscriber_klass.new }
     let(:top_level_b) { subscriber_klass.new }
 

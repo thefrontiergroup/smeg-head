@@ -2,13 +2,13 @@ require "spec_helper"
 
 describe SmegHead::Plugin do
 
+  let(:plugin) { Class.new(SmegHead::Plugin) }
+
   it "should be an abstract railtie" do
     SmegHead::Plugin.should be_abstract_railtie
   end
 
   describe "metadata accessors" do
-
-    let(:plugin) { Class.new(SmegHead::Plugin) }
 
     it "should define a name accessor" do
       plugin.should respond_to(:plugin_name)
@@ -73,15 +73,26 @@ describe SmegHead::Plugin do
 
   describe "subscribing to events" do
 
-    it "should subscribe to events when the hub is loaded"
+    around(:each) { |blk| with_hub(SmegHead::Hub.new, &blk) }
+    after(:each)  { plugin.teardown_subscriptions! }
 
-    it "should subscribe to events when the hub is set to primary"
+    it "should subscribe to events when after initialization"
 
-    it "should not subscribe if the hub isn't loaded"
+    it "should let you subscribe with objects" do
+      o = Object.new
+      mock(o).call(anything) { true }
+      plugin.subscribe 'a:b:c', o
+      plugin.setup_subscriptions!
+      SmegHead.publish 'a:b:c'
+    end
 
-    it "should let you subscribe with objects"
-
-    it "should let you subscribe with lambdas"
+    it "should let you subscribe with lambdas" do
+      called = false
+      plugin.subscribe('a:b:c') { |o| called = true }
+      plugin.setup_subscriptions!
+      SmegHead.publish 'a:b:c'
+      called.should be_true
+    end
 
   end
 

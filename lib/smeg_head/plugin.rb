@@ -15,7 +15,27 @@ module SmegHead
       end
 
       def subscriptions
-        @subscriptions ||= Hash.new { |h,j| h[k] = [] }
+        @subscriptions ||= Hash.new { |h,k| h[k] = [] }
+      end
+
+      def setup_subscriptions!
+        @managed_subscriptions ||= []
+        hub = SmegHead.hub
+        subscriptions.each_pair do |key, key_subscriptions|
+          key_subscriptions.each do |subscription|
+            @managed_subscriptions << hub.subscribe(key, subscription)
+          end
+        end
+        @managed_subscriptions
+      end
+
+      def teardown_subscriptions!
+        return unless defined?(@managed_subscriptions) and @managed_subscriptions.present?
+        hub = SmegHead.hub
+        @managed_subscriptions.each do |subscription|
+          hub.unsubscribe subscription
+        end
+        @managed_subscriptions = nil
       end
 
       def define_metadata_accessors(*args)
