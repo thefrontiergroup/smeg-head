@@ -55,6 +55,24 @@ class RepositoryManager
     true
   end
 
+  # Updates the branch that head points to, effectively letting the user change
+  # the default branch when users change repos.
+  # @param [String] ref the branch name to update the master
+  # @return [Boolean] whether the change was successful
+  def update_head(ref)
+    return if ref.blank?
+    ref = ref.to_s
+    return unless branches.include?(ref)
+    full_ref = "refs/heads/#{ref}"
+    in_repository { cmd(:git, 'symbolic-ref', '-q', 'HEAD', full_ref).ok? }
+  end
+  alias head= update_head
+
+  # Gets the current head for the repository.
+  def head
+    Grit::Head.current(to_grit).try :name
+  end
+
   def destroy!
     FileUtils.rm_rf(path) if path.exist?
   end
@@ -78,6 +96,10 @@ class RepositoryManager
   # Starts upload-pack inside the repository.
   def upload_pack!
     run_in_repo! "git-upload-pack", path.to_s
+  end
+
+  def branches
+    Grit::Head.find_all(to_grit).map(&:name)
   end
 
   private
