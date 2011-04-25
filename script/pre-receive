@@ -17,13 +17,11 @@ die! "No drb server found for communication" if drb_uri.to_s.empty?
 DRb.start_service # Required for callbacks etc.
 manager = DRbObject.new_with_uri(drb_uri)
 
-refs = []
-
 STDIN.each_line do |line|
   old_ref, new_ref, full_ref = line.strip.split(" ", 3)
-  refs << [old_ref, new_ref, full_ref]
+  unless manager.can_process_ref?(old_ref, new_ref, full_ref)
+    die! "Unable to push to #{full_ref} - Permission denied."
+  end
 end
-
-manager.notify_refs! refs
 
 exit 0

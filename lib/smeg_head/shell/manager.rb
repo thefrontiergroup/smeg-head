@@ -1,4 +1,6 @@
 require 'smeg_head/shell/command'
+require 'drb/drb'
+require 'drb/unix'
 
 module SmegHead
   module Shell
@@ -19,7 +21,7 @@ module SmegHead
         unpack_command
         prepare_repository
         setup_environment
-        execute_command!
+        with_drb_server(self) { execute_command! }
       rescue Error => e
         $stderr.puts e.message
         exit 1
@@ -52,6 +54,7 @@ module SmegHead
       end
 
       def setup_environment
+        debug "Setting up enviroment"
         current_context_env.each_pair do |k, v|
           ENV["SH_" + k.to_s.upcase] = v.to_s
         end
@@ -59,6 +62,7 @@ module SmegHead
 
       def execute_command!
         manager = repository.manager
+        debug "Running #{command.verb} under #{manager.path}"
         case command.verb
         when :read  then manager.upload_pack!
         when :write then manager.receive_pack!
@@ -66,7 +70,27 @@ module SmegHead
         end
       end
 
+      # Useful operations on the other side
+
+      def can_process_ref?(old_ref, new_ref, full_ref)
+        true
+      end
+
+      # Process a series of refs after the fact.
+      def notify_refs!(ref_collection)
+        debug "Notifying for ref collection: #{ref_collection.inspect}"
+      end
+
       private
+
+      def with_drb_server(ctx)
+        server = DRb::DRbServer.new 'drbunix:', ctx
+        ENV['SH_DRB_SERVER'] = server.uri
+        yield if block_given?
+      ensure
+        ENV['SH_DRB_SERVER'] = nil
+        server.stop_service
+      end
 
       def catching_not_found(description)
         yield if block_given?
