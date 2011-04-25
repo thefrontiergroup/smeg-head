@@ -1,0 +1,73 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'readline'
+require 'yaml'
+require 'pathname'
+require 'active_support/secure_random'
+
+editor = ENV['EDITOR'] || "vim"
+base   = Pathname(__FILE__).dirname.dirname
+
+if !(ARGV & ["-h", "--help", "help"]).empty?
+  puts "Usage: #$0"
+  puts ""
+  puts "Configures the current application (settings and database) to make it ready for use."
+end
+
+$step = 0
+def step(text)
+  puts "Step #{$step += 1}. #{text}"
+end
+
+def run_sh(cmd)
+  puts ">> #{cmd}"
+  unless system cmd
+    $STDERR.puts "Command failed - stopping."
+    exit 1
+  end
+end
+
+def setup_defaults!(settings_file)
+  settings                = YAML.load_file(settings_file)
+  defaults                = (settings["default"] ||= {})
+  rails_config            = (defaults["rails"] ||= {})
+  rails_config["secret"]  = ActiveSupport::SecureRandom.hex(64)
+  devise_config           = (defaults["devise"] ||= {})
+  devise_config["pepper"] = ActiveSupport::SecureRandom.hex(64)
+  # Write out the settings
+  File.open(settings_file, "w+") { |f| f.write YAML.dump(settings) }
+end
+
+Dir.chdir base do
+
+  if `which bundle`.empty?
+    step "Installing Bundler"
+    run_sh "gem install bundler -v'~>1.0.0'"
+  end
+
+  step "Running bundle install"
+  run_sh "bundle install"
+
+  db_yml = base.join("config", "database.yml")
+  if !db_yml.readable?
+    step "Copy across database"
+    run_sh "cp '#{db_yml.to_s.gsub(".yml", ".example.yml")}' '#{db_yml}'"
+    step "Edit database config"
+    run_sh "#{editor} '#{db_yml}'"
+  end
+
+  settings_yml = base.join("config", "settings.yml")
+  if !settings_yml.readable?
+    step "Copy across settings"
+    run_sh "cp '#{settings_yml.to_s.gsub(".yml", ".example.yml")}' '#{settings_yml}'"
+    step "Setting up default settings"
+    setup_defaults! settings_yml
+    step "Edit settings"
+    run_sh "#{editor} '#{settings_yml}'"
+  end
+
+  step "Setting up db"
+  run_sh "rake db:setup"
+
+end
