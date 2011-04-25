@@ -24,11 +24,9 @@ group :test, :development do
   # Guard basics
   gem 'guard', :require => nil
   gem 'guard-rspec', :require => nil
-  if RUBY_VERSION < '1.9'
-    gem 'ruby-debug'
-  else
-    gem 'ruby-debug19'
-  end
+
+  gem 'ruby-debug',   :platforms => :ruby_18
+  gem 'ruby-debug19', :platforms => :ruby_19
 end
 
 group :test do
@@ -38,7 +36,7 @@ group :test do
   gem 'rcov', :require => nil
   gem 'syntax', :require => nil
   gem 'fuubar'
-  gem 'simplecov' unless RUBY_VERSION < '1.9'
+  gem 'simplecov', :platforms => :ruby_19
 end
 
 group :test_mac do
