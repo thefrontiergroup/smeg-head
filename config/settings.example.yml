@@ -7,5 +7,6 @@ default:
     pepper: "a-long-random-string-goes-here-for-devise-to-handle-authentication"
   smeg_head:
     host: 'localhost'
+    user: 'git'
   commands:
     git_shell: '/usr/local/bin/git-shell'

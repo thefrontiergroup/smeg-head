@@ -90,6 +90,12 @@ class Repository < ActiveRecord::Base
     return true
   end
 
+  def to_git_url(default_host = 'localhost')
+    user = Settings.smeg_head.fetch(:user, 'git')
+    host = Settings.smeg_head.fetch(:host, default_host)
+    "#{user}@#{host}:#{clone_path}.git"
+  end
+
   protected
 
   # Sets the clone_path attribute to have a cached copy of the calculated clone path
