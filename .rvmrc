@@ -1,1 +1,14 @@
-rvm use ree-1.8.7-2011.03@smeg-head --create >/dev/null 2>&1
+# Check for the smeghead ruby alias then fallback to the default interpreter.
+
+rvm_use_with_alias() {
+  local current_alias="$(rvm alias show "$1" 2>/dev/null)"
+  if [[ -z "$current_alias" ]]; then
+    current_alias="$2"
+  fi
+  rvm use "$current_alias"@"$3" --create
+}
+
+rvm_use_with_alias "smeghead" "ree-1.8.7-2011.03" "smeg-head" >/dev/null 2>&1
+
+
+
