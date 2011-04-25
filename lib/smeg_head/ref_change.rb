@@ -4,10 +4,11 @@ module SmegHead
   # pushes to {pre,post}-receive hooks. In this case, we provide simple
   # helper methods to make it easier to operate on these changes.
   class RefChange
+    extend ActiveSupport::Memoizable
 
     NONEXISTANT_REF = "0000000000000000000000000000000000000000".freeze
 
-    attr_accessor :old_ref, :new_ref, :full_ref_name
+    attr_reader :old_ref, :new_ref, :full_ref_name
 
     def initialize(old_ref, new_ref, full_ref_name)
       @old_ref       = old_ref
@@ -36,8 +37,9 @@ module SmegHead
     # * the actual identifier (e.g. `master`)
     # @return [Array<String>] the 3 parts of the ref
     def parts
-      @parts ||= full_ref_name.split("/", 3)
+      full_ref_name.split("/", 3)
     end
+    memoize :parts
 
     # Gets the current type of ref being modified.
     # @param [Symbol] the type of ref modified. :unknown for an unknown type of ref.
@@ -45,9 +47,12 @@ module SmegHead
       case ref_parts[2]
       when "tags"    then :tag
       when "heads"   then :branch
+      when "remotes" then :remote
+      when "notes"   then :note
       else :unknown
       end
     end
+    memoize :type
 
     # Is the current change referencing a branch?
     def branch?
@@ -59,10 +64,22 @@ module SmegHead
       type == :tag
     end
 
+    # Is the current change referencing a note?
+    def note?
+      type == :note
+    end
+
+    # Is the current change referencing a remote?
+    def remote?
+      type == :remote
+    end
+
     # The name of the current change, minus the type declaration and ref prefix.
     def relative_name
       parts[2]
     end
+    memoize :relative_name
+
     alias branch_name relative_name
     alias tag_name    relative_name
 
