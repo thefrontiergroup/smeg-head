@@ -10,11 +10,19 @@ To get started, it should be as simple as running:
 
     git clone git://github.com/thefrontiergroup/smeg-head.git
     cd smeg-head
-    bundle install
-    cp config/database{.example,}.yml
-    cp config/settings{.example,}.yml
-    rake db:setup
+    ./script/configure
     ./script/server
+    
+This will:
+
+* Clone the repository
+* Change into it
+* Setup bundler if missing
+* Run bundle install
+* Copy example configs and open them in your `EDITOR` of choice.
+* Run rake db:setup
+
+Leaving you with a useable blank slate.
     
 ## Extra Documentation
 
