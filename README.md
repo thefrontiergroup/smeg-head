@@ -21,6 +21,7 @@ This will:
 * Run bundle install
 * Copy example configs and open them in your `EDITOR` of choice.
 * Run rake db:setup
+* Start up a web server with the application open.
 
 Leaving you with a useable blank slate.
     
