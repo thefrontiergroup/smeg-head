@@ -81,6 +81,21 @@ class Repository < ActiveRecord::Base
     manager.destroy!
   end
 
+  # Returns a boolean denoting whether or not we should allow the given
+  # user to modify the ref change passed in.
+  # @param [User] user the user to check against
+  # @param [SmegHead::RefChange] refchange the ref change to check.
+  def allow_ref_change?(user, ref_change)
+    # TODO: Implement ACL-based security checks here.
+    return true
+  end
+
+  def to_git_url(default_host = 'localhost')
+    user = Settings.smeg_head.fetch(:user, 'git')
+    host = Settings.smeg_head.fetch(:host, default_host)
+    "#{user}@#{host}:#{clone_path}.git"
+  end
+
   protected
 
   # Sets the clone_path attribute to have a cached copy of the calculated clone path

@@ -35,9 +35,24 @@ class RepositoryManager
   def create!
     return if path.exist?
     FileUtils.mkdir_p path
-    in_repository do
-      cmd(:git, '--bare', :init).ok?
+    result = in_repository { cmd(:git, '--bare', :init).ok? }
+    setup_hooks! if result
+    result
+  end
+
+  # Automatically symlinks the hooks into place for the current
+  # repository, taking care to make sure it matches the correct object.
+  def setup_hooks!
+    shared_path      = Rails.root.join("hooks")
+    destination_path = path.join('hooks')
+    FileUtils.mkdir_p destination_path
+    Dir[shared_path.join('**', '*')].each do |original_hook|
+      hook_name = File.basename(original_hook)
+      hook_path = destination_path.join(hook_name)
+      FileUtils.rm_rf hook_path
+      FileUtils.ln_s original_hook, hook_path
     end
+    true
   end
 
   def destroy!
@@ -57,12 +72,12 @@ class RepositoryManager
 
   # Starts receive-pack in the repository.
   def receive_pack!
-    exec_in_repo! "git-receive-pack", path.to_s
+    run_in_repo! "git-receive-pack", path.to_s
   end
 
   # Starts upload-pack inside the repository.
   def upload_pack!
-    exec_in_repo! "git-upload-pack", path.to_s
+    run_in_repo! "git-upload-pack", path.to_s
   end
 
   private
@@ -99,11 +114,12 @@ class RepositoryManager
 
   # Runs a command inside the git repository, using exec and git-shell to avoid
   # the most common security attacks.
-  def exec_in_repo!(*args)
-    command = build_command('git-shell', '-c', *args)
-    Dir.chdir path
-    logger.info "Executing command in repo: \"#{command}\" in #{Dir.pwd}"
-    exec *args
+  def run_in_repo!(*args)
+    command = build_command(*args)
+    Dir.chdir path do
+      logger.info "Executing command in repo: \"#{command}\" in #{Dir.pwd}"
+      system Settings.commands.fetch(:git_shell, 'git-shell'), '-c', command
+    end
   end
 
   def cmd(*args, &blk)

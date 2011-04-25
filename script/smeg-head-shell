@@ -1,27 +1,9 @@
 #!/usr/bin/env ruby
-require File.expand_path('../../config/application',  __FILE__)
+current_file = __FILE__
+current_file = File.readlink(current_file) while File.symlink?(current_file)
+require File.expand_path('../../config/application',  current_file)
+
 SmegHead::Application.initialize!
 
-require 'shellwords'
-original_command_parts = Shellwords.shellwords ENV['SSH_ORIGINAL_COMMAND']
-
-command    = original_command_parts.shift
-repository = original_command_parts.shift
-
-def die(error)
-  warn error
-  exit 1
-end
-
-repo = Repository.from_path(repository) or die "No repository named '#{repository}' found."
-
-case command
-when /^git[- ]upload-pack$/
-  repo.manager.upload_pack!
-when /^git[- ]receive-pack$/
-  repo.manager.receive_pack!
-else
-  die "Unrecognized command."
-end
-
-die "Ninja attack"
+require 'smeg_head/shell'
+SmegHead::Shell::Manager.start
