@@ -40,14 +40,17 @@ class RepositoryManager
     result
   end
 
+  # Automatically symlinks the hooks into place for the current
+  # repository, taking care to make sure it matches the correct object.
   def setup_hooks!
-    script_dir = Rails.root.join("script")
-    hook_dir   = path.join('hooks')
-    FileUtils.rm_rf hook_dir
-    FileUtils.mkdir_p hook_dir
-    %w(pre-receive post-receive).each do |hook|
-      hook_path = hook_dir.join(hook)
-      FileUtils.ln_s script_dir.join(hook), hook_path
+    shared_path      = Rails.root.join("hooks")
+    destination_path = path.join('hooks')
+    FileUtils.mkdir_p destination_path
+    Dir[shared_path.join('**', '*')].each do |original_hook|
+      hook_name = File.basename(original_hook)
+      hook_path = destination_path.join(hook_name)
+      FileUtils.rm_rf hook_path
+      FileUtils.ln_s original_hook, hook_path
     end
     true
   end
