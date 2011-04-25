@@ -60,6 +60,9 @@ module SmegHead
       # are performed after this point as part of the pre-receive hook.
       def check_permission
         debug "Checking permissions"
+        unless repository.accessible_by?(current_user)
+          raise Error, "I'm sorry Dave, I can't let you do that."
+        end
       end
 
       # Pass through any environment variables we need to the child process to process what is going on.

@@ -85,9 +85,19 @@ class Repository < ActiveRecord::Base
   # user to modify the ref change passed in.
   # @param [User] user the user to check against
   # @param [SmegHead::RefChange] refchange the ref change to check.
+  # @return [Boolean] true iff the user can perform the requested ref change.
   def allow_ref_change?(user, ref_change)
     # TODO: Implement ACL-based security checks here.
     return true
+  end
+
+  # General access check for the given user - Primarily, is the user able
+  # to look at this repository? Finer-grained permissions are modifyable
+  # by the acl.
+  # @param [User] user the user to check for
+  # @return [Boolean] true iff the user can access the given repository.
+  def accessible_by?(user)
+    true
   end
 
   def to_ssh_url(default_host = 'localhost')
