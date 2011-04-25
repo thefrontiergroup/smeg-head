@@ -5,3 +5,7 @@ default:
     secret: 'a-randomly-generated-session-key-that-you-need-to-know-to-update'
   devise:
     pepper: "a-long-random-string-goes-here-for-devise-to-handle-authentication"
+  smeg_head:
+    host: 'localhost'
+  commands:
+    git_shell: '/usr/local/bin/git-shell'
