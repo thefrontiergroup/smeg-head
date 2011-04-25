@@ -9,6 +9,3 @@ rvm_use_with_alias() {
 }
 
 rvm_use_with_alias "smeghead" "ree-1.8.7-2011.03" "smeg-head" >/dev/null 2>&1
-
-
-

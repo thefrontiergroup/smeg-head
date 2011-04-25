@@ -11,5 +11,4 @@ class User < ActiveRecord::Base
   has_many :repositories, :as => :owner
 
   alias path_prefix to_param
-
 end

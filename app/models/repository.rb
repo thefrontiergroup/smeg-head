@@ -90,7 +90,7 @@ class Repository < ActiveRecord::Base
     return true
   end
 
-  def to_git_url(default_host = 'localhost')
+  def to_ssh_url(default_host = 'localhost')
     user = Settings.smeg_head.fetch(:user, 'git')
     host = Settings.smeg_head.fetch(:host, default_host)
     "#{user}@#{host}:#{clone_path}.git"
