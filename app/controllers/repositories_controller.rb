@@ -42,9 +42,7 @@ class RepositoriesController < ApplicationController
   end
 
   def current_ref
-    params[:ref] = repository.manager.head if params[:ref] == :default
-    logger.debug "New params: #{params.inspect}"
-    params[:ref]
+    @current_ref ||= (params[:ref] == :default ? repository.manager.head : params[:ref])
   end
 
   def current_path
@@ -61,7 +59,7 @@ class RepositoriesController < ApplicationController
   end
 
   def check_type!(entry, type = Grit::Tree)
-    raise Error, 'unknown tree' unless entry.present? and entry.is_a?(type)
+    raise Error, 'Unknown object' unless entry.presence.is_a?(type)
   end
 
 end
