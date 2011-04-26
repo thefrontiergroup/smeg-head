@@ -73,6 +73,10 @@ class Repository < ActiveRecord::Base
     @manager ||= RepositoryManager.new(self)
   end
 
+  def to_grit
+    @to_grit ||= manager.to_grit
+  end
+
   def create_repository
     manager.create!
   end
@@ -92,8 +96,7 @@ class Repository < ActiveRecord::Base
   end
 
   # General access check for the given user - Primarily, is the user able
-  # to look at this repository? Finer-grained permissions are modifyable
-  # by the acl.
+  # to look at this repository? Finer-grained permissions are modifiable by the acl.
   # @param [User] user the user to check for
   # @return [Boolean] true iff the user can access the given repository.
   def accessible_by?(user)
