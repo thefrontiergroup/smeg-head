@@ -10,7 +10,25 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110209134744) do
+ActiveRecord::Schema.define(:version => 20110426110743) do
+
+  create_table "group_memberships", :force => true do |t|
+    t.integer  "group_id"
+    t.integer  "user_id"
+    t.boolean  "administrator", :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "groups", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.string   "cached_slug"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "groups", ["cached_slug"], :name => "index_groups_on_cached_slug"
 
   create_table "repositories", :force => true do |t|
     t.string   "name",        :null => false

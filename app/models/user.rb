@@ -10,5 +10,8 @@ class User < ActiveRecord::Base
 
   has_many :repositories, :as => :owner
 
+  has_many :group_memberships
+  has_many :groups, :through => :group_memberships
+
   alias path_prefix to_param
 end

@@ -4,6 +4,8 @@ describe User do
 
   context 'associations' do
     it { should have_many :repositories, :as => :owner }
+    it { should have_many :group_memberships }
+    it { should have_many :groups, :through => :group_memberships }
   end
 
   context 'validations' do
