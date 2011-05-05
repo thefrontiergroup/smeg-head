@@ -16,6 +16,8 @@ gem 'ydd', :require => nil
 gem 'angry_shell'
 gem 'grit'
 
+gem 'parslet'
+
 group :test, :development do
   gem 'rspec',       '~> 2.1'
   gem 'rspec-rails', '~> 2.1'
