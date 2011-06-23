@@ -30,7 +30,8 @@ module SmegHead
         when :user
           all? || name == user.login
         when :collaborators
-          true # User is assumed to be a collaborator.
+          # User is assumed to be a collaborator if they've reached this point.
+          true
         end
       end
 
