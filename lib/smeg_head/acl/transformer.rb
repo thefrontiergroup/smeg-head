@@ -1,6 +1,8 @@
 module SmegHead
   module ACL
 
+    class Error < StandardError; end
+
     class Actor < Struct.new(:type, :name)
 
       def collaborators?
@@ -72,7 +74,7 @@ module SmegHead
 
     end
 
-    class Rule 
+    class Rule
 
       attr_reader :verb, :targets, :actors, :actions
 
@@ -117,7 +119,11 @@ module SmegHead
       end
 
       def self.parse(rules)
-        new parser.parse(rules)
+        result = parser.parse(rules)
+        raise Error, "is not of the correct type" if result == rules
+        new result
+      rescue Parslet::ParseFailed => e
+        raise Error, e.message
       end
 
       def self.parser
