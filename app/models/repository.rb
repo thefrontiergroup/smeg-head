@@ -77,10 +77,14 @@ class Repository < ActiveRecord::Base
     @to_grit ||= manager.to_grit
   end
 
+  # When a repository is created, will perform any tasks that need to
+  # be taken care of before granting access.
   def create_repository
     manager.create!
   end
 
+  # When a repository is destroyed, will perform any tasks that need to
+  # be taken care of after the fact.
   def cleanup_repository
     manager.destroy!
   end
@@ -103,6 +107,9 @@ class Repository < ActiveRecord::Base
     true
   end
 
+  # Converts the repository to a ssh url with a given default host.
+  # @param [String] default_host the default host for the ssh server to be available at
+  # @return [String] a formatted git clone url over ssh
   def to_ssh_url(default_host = 'localhost')
     user = Settings.smeg_head.fetch(:user, 'git')
     host = Settings.smeg_head.fetch(:host, default_host)
