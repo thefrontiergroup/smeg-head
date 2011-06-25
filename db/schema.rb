@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110426110743) do
+ActiveRecord::Schema.define(:version => 20110625075152) do
 
   create_table "group_memberships", :force => true do |t|
     t.integer  "group_id"
@@ -56,6 +56,16 @@ ActiveRecord::Schema.define(:version => 20110426110743) do
   add_index "slugs", ["scope", "record_id"], :name => "index_slugs_on_scope_and_record_id"
   add_index "slugs", ["scope", "slug", "created_at"], :name => "index_slugs_on_scope_and_slug_and_created_at"
   add_index "slugs", ["scope", "slug"], :name => "index_slugs_on_scope_and_slug"
+
+  create_table "ssh_keys", :force => true do |t|
+    t.integer  "owner_id",    :null => false
+    t.string   "owner_type",  :null => false
+    t.string   "name",        :null => false
+    t.string   "fingerprint", :null => false
+    t.text     "key",         :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
