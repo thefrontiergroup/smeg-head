@@ -45,6 +45,11 @@ group :test do
   gem 'syntax', :require => nil
   gem 'fuubar'
   gem 'simplecov', :platforms => :ruby_19
+  gem 'cucumber-rails'
+  gem 'capybara'
+  gem 'capybara-webkit'
+  gem 'headless', '~> 0.1.0'
+  gem 'database_cleaner'
 end
 
 group :test_mac do
