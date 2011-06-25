@@ -1,0 +1,10 @@
+%h2 Welcome to Smeg Head
+
+%h3
+  Repositories
+  = link_to '(Create Repository)', new_users_repository_path
+%ul#repositories
+  - if @repositories.empty?
+    %li.empty You don't have any repositories yet - Why not #{link_to 'add one', new_users_repository_path}?
+  - @repositories.each do |repository|
+    %li.repository= link_to repository.name, contextual_repo_path(repository.owner, repository, :root)

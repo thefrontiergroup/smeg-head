@@ -2,8 +2,9 @@ class RepositoriesController < ApplicationController
 
   Error = Class.new(StandardError)
 
-  attr_reader :owner, :repository
+  attr_reader   :owner, :repository
   helper_method :owner, :repository, :current_path
+
   before_filter :prepare_owner
   before_filter :prepare_repository
 
@@ -31,7 +32,7 @@ class RepositoriesController < ApplicationController
   def prepare_owner
     source = request.path_parameters
     if source.has_key?(:user_id)
-      @owner = @user = User.find_using_slug!(params[:user_id])
+      @owner = @user = User.find_using_slug!(source[:user_id])
     else # Fallback to other
       raise ActiveRecord::RecordNotFound
     end

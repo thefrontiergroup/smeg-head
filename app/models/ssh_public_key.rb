@@ -13,6 +13,8 @@ class SshPublicKey < ActiveRecord::Base
   validate    :validate_ssh_key_format
   before_save :cache_key_fingerprint
 
+  attr_accessible :name, :key
+
   # Takes in a supposed string containing an ssh key and performs transformation (in the form
   # of normalising it to a common format, minus comment) and fingerprinting as part of the setup
   # process.

@@ -18,13 +18,18 @@ SmegHead::Application.routes.draw do
 
   namespace :users do
     resources :ssh_public_keys
+    resources :repositories, :only => [:new, :create]
   end
 
   devise_for :users
 
+  authenticated :user do
+    root :to => 'site#dashboard'
+  end
+
   root :to => 'site#index'
 
-  # resources :users, :only => [:index, :show], &repository_routes
+  resources :users, :only => [:show], &repository_routes
   #
   # resources :clients do
   #   resources :projects, &repository_routes
