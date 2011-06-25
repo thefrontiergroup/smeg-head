@@ -1,0 +1,4 @@
+%h2 Edit SSH Public Key
+
+= semantic_form_for @ssh_public_key, :url => users_ssh_public_key_path(@ssh_public_key) do |form|
+  = partial 'form', :object => form

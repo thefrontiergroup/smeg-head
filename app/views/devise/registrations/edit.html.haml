@@ -11,6 +11,25 @@
   = f.buttons do
     = f.commit_button "Update"
 
+%h3 Manage SSH Public Keys
+
+%ul#ssh-public-keys
+  - if current_user.ssh_public_keys.empty?
+    %li.empty You currently have no ssh public keys.
+  - current_user.ssh_public_keys.each do |key|
+    %li.ssh-public-key
+      = link_to key.name, [:users, key], :class => 'key-name'
+      %span.key-fingerprint
+        %code= key.fingerprint
+      = link_to 'Edit',   [:edit_users, key], :class => 'edit-key'
+      or
+      = button_to 'Remove', [:users, key], :class => 'remove-key', :method => :delete, :confirm => "Are you sure?"
+
+%h4 Add a New SSH Public Key
+= semantic_form_for SshPublicKey.new, :url => :users_ssh_public_keys, :method => :post do |form|
+  = partial 'users/ssh_public_keys/form', :object => form
+
+
 %h3 Close my account
 
 %p

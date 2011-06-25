@@ -16,6 +16,10 @@ SmegHead::Application.routes.draw do
     end
   end
 
+  namespace :users do
+    resources :ssh_public_keys
+  end
+
   devise_for :users
 
   root :to => 'site#index'
