@@ -18,6 +18,9 @@ gem 'grit'
 
 gem 'parslet'
 
+gem 'navigasmic'
+gem 'nestive', :git => 'git://github.com/sj26/nestive.git', :require => ['nestive', 'nestive/railtie']
+
 group :test, :development do
   gem 'rspec',       '~> 2.1'
   gem 'rspec-rails', '~> 2.1'

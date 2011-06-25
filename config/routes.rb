@@ -18,10 +18,12 @@ SmegHead::Application.routes.draw do
 
   devise_for :users
 
-  resources :users, :only => [:index, :show], &repository_routes
+  root :to => 'site#index'
 
-  resources :clients do
-    resources :projects, &repository_routes
-  end
+  # resources :users, :only => [:index, :show], &repository_routes
+  #
+  # resources :clients do
+  #   resources :projects, &repository_routes
+  # end
 
 end
