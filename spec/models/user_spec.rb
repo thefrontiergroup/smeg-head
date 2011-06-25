@@ -9,7 +9,20 @@ describe User do
   end
 
   context 'validations' do
+
+    let!(:existing_user) { User.make! }
+
     it { should validate_presence_of :login }
+    it { should validate_uniqueness_of :login }
+
+    it 'should validate the login is unchangeable' do
+      user = User.make!
+      user.should be_valid
+      user.login = 'a completely new login'
+      user.should_not be_valid
+      user.should have(1).errors_on(:login)
+    end
+
   end
 
   it_should_behave_like 'a sluggable model'

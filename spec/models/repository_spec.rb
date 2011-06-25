@@ -56,6 +56,7 @@ describe Repository do
     end
 
     it 'should change when we update the owner' do
+      pending
       expect do
         repository.owner.update_attributes! :login => Forgery(:internet).user_name
       end.to change(repository, :calculated_clone_path)

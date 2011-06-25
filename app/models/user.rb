@@ -4,7 +4,8 @@ class User < ActiveRecord::Base
 
   attr_accessible :login, :email, :password, :password_confirmation, :remember_me
 
-  validates :login, :presence => true
+  validates :login, :presence => true, :uniqueness => true
+  validate  :validate_login_is_unchanged
 
   is_sluggable :login
 
@@ -14,4 +15,11 @@ class User < ActiveRecord::Base
   has_many :groups, :through => :group_memberships
 
   alias path_prefix to_param
+
+  protected
+
+  def validate_login_is_unchanged
+    errors.add :login, :can_not_be_changed if login_changed? and !new_record?
+  end
+
 end
