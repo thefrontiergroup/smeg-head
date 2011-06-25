@@ -1,8 +1,12 @@
 %h1 Smeg Head
 
+- if user_signed_in?
+  %span.signed-in-notice Hello there, #{current_user.login}!
+
 - semantic_navigation :main do |nav|
   = nav.item 'Home', :link => root_path
   - if user_signed_in?
+    = nav.item 'Edit Account', :link => edit_user_registration_path
     = nav.item 'Sign Out', :link => destroy_user_session_path
   - else
     = nav.item 'Sign In', :link => new_user_session_path

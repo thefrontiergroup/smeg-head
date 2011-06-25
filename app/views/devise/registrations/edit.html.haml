@@ -1,0 +1,20 @@
+%h2 Edit #{resource_name.to_s.humanize}
+
+= semantic_form_for resource, :as => resource_name, :url => registration_path(resource_name), :html => {:method => :put} do |f|
+
+  = f.inputs :account_details do
+    = f.input :email
+    = f.input :password, :hint => "If you don't wish to change it, leave it blank."
+    = f.input :password_confirmation
+    = f.input :current_password, :hint => "We need your current password to confirm your changes."
+
+  = f.buttons do
+    = f.commit_button "Update"
+
+%h3 Close my account
+
+%p
+  Unhappy?
+  = link_to 'Close my account', registration_path(resource_name), :confirm => 'Are you sure?', :method => :delete
+
+= link_to "Back", :back
