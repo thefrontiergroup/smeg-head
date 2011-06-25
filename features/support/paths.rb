@@ -10,7 +10,27 @@ module NavigationHelpers
 
     when /the home\s?page/
       '/'
+    when /the new repository_management page/
+      new_repository_management_path
 
+    when /the new ssh_key_management page/
+      new_ssh_key_management_path
+
+    when /the new account_management page/
+      new_account_management_path
+
+    when /the new authentication page/
+      new_authentication_path
+
+    when /the new account_creation page/
+      new_account_creation_path
+
+    when /sign in/
+      '/users/sign_in'
+    when /sign out/
+      '/users/sign_out'
+    when /my profile/
+      '/users/profile'
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #
