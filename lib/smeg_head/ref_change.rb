@@ -1,3 +1,5 @@
+require 'smeg_head/ref'
+
 module SmegHead
   # Represents a simple reference change in Git.
   # The format is relatively simple in that matches roughly what git
