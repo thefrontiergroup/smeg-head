@@ -17,6 +17,7 @@ SmegHead.hub = SmegHead::MockHub.new
 RSpec.configure do |config|
   config.mock_with :rr
   config.use_transactional_fixtures = true
+  config.include Devise::TestHelpers, :type => :controller
   config.include MiscHelpers
   config.before(:each) { Machinist.reset_before_test }
 
