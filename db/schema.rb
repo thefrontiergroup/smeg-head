@@ -57,7 +57,7 @@ ActiveRecord::Schema.define(:version => 20110625075152) do
   add_index "slugs", ["scope", "slug", "created_at"], :name => "index_slugs_on_scope_and_slug_and_created_at"
   add_index "slugs", ["scope", "slug"], :name => "index_slugs_on_scope_and_slug"
 
-  create_table "ssh_keys", :force => true do |t|
+  create_table "ssh_public_keys", :force => true do |t|
     t.integer  "owner_id",    :null => false
     t.string   "owner_type",  :null => false
     t.string   "name",        :null => false

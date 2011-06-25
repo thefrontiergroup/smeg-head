@@ -27,3 +27,5 @@ module SmegHead
 
   end
 end
+
+# Avoid the SSHKey model trampling on our code...

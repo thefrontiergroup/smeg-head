@@ -15,6 +15,7 @@ gem 'ydd', :require => nil
 
 gem 'angry_shell'
 gem 'grit'
+gem 'sshkey'
 
 gem 'parslet'
 
