@@ -1,9 +1,7 @@
-require 'angry_shell'
-require 'fileutils'
-
 # The Repository Manager class acts a base for performing operations on a given repository.
 # This includes things such as manipulating and getting the state of the repository.
 class RepositoryManager
+  include SmegHead::Commandable
 
   class Error                 < StandardError; end
   class NonexistantRepository < Error; end
@@ -104,36 +102,6 @@ class RepositoryManager
 
   private
 
-  # Shell Code taken from stuff I (Darcy) wrote for RVM
-
-  # Takes an array / number of arguments and converts
-  # them to a string useable for passing into a shell call.
-  def escape_arguments(*args)
-    return if args.blank?
-    args.flatten.map { |a| escape_argument(a.to_s) }.join(" ")
-  end
-
-  # Given a string, converts to the escaped format. This ensures
-  # that things such as variables aren't evaluated into strings
-  # and everything else is setup as expected.
-  def escape_argument(s)
-    return "''" if s.empty?
-    s.scan(/('+|[^']+)/).map do |section|
-      section = section.first
-      if section[0] == ?'
-        "\\'" * section.length
-      else
-        "'#{section}'"
-      end
-    end.join
-  end
-
-  # From a command, will build up a runnable command. If args isn't provided,
-  # it will escape arguments.
-  def build_command(command, *args)
-    "#{command} #{escape_arguments(args)}".strip
-  end
-
   # Runs a command inside the git repository, using exec and git-shell to avoid
   # the most common security attacks.
   def run_in_repo!(*args)
@@ -142,16 +110,6 @@ class RepositoryManager
       logger.info "Executing command in repo: \"#{command}\" in #{Dir.pwd}"
       system Settings.commands.fetch(:git_shell, 'git-shell'), '-c', command
     end
-  end
-
-  def cmd(*args, &blk)
-    options = args.extract_options!
-    command = build_command(*args)
-    AngryShell::Shell.new(options.merge(:cmd => command), &blk)
-  end
-
-  def logger
-    Rails.logger
   end
 
 end
