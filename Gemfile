@@ -19,6 +19,8 @@ gem 'sshkey'
 
 gem 'parslet'
 
+gem 'inherited_resources'
+
 gem 'navigasmic'
 gem 'nestive', :git => 'git://github.com/sj26/nestive.git', :require => ['nestive', 'nestive/railtie']
 
