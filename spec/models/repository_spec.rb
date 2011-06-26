@@ -31,9 +31,9 @@ describe Repository do
       user_two.should be_able_to :index, repository
     end
 
-    it 'should only allow the owner to edit a repository' do
-      user_one.should     be_able_to :edit, repository
-      user_two.should_not be_able_to :edit, repository
+    it 'should only allow the owner to update a repository' do
+      user_one.should     be_able_to :update, repository
+      user_two.should_not be_able_to :update, repository
     end
 
     it 'should only allow the owner to destroy a repository' do

@@ -3,6 +3,7 @@ class Users::SshPublicKeysController < ApplicationController
   before_filter :authenticate_user!
 
   inherit_resources
+  load_and_authorize_resource :ssh_public_key
 
   actions :create, :edit, :update, :destroy
 

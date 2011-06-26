@@ -10,13 +10,13 @@ class Ability
     # Repository Permissions
     can(:create,  Repository) # All users can create repositories
     can(:read,    Repository) # At the moment, all users can read repositories.
+    can(:update,  Repository) { |r| owns? r }
     can(:destroy, Repository) { |r| owns? r }
-    can(:edit,    Repository) { |r| owns? r }
 
     # SSH Key Permissions
     can(:create,  SshPublicKey)
     can(:read,    SshPublicKey) { |r| owns? r }
-    can(:edit,    SshPublicKey) { |r| owns? r }
+    can(:update,  SshPublicKey) { |r| owns? r }
     can(:destroy, SshPublicKey) { |r| owns? r }
 
   end

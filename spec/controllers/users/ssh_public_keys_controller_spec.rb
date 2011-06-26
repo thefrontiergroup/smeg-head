@@ -11,18 +11,18 @@ describe Users::SshPublicKeysController do
   describe 'the create action' do
 
     it 'should set the flash after create' do
-      post :create, :ssh_public_key => {:name => 'Test Name', :key => ExampleKeys.good_rsa}
+      post :create, :ssh_public_key => {:name => 'Test Name', :key => ExampleKeys.good_rsa }
       flash[:notice].should be_present
     end
 
     it 'should redirect to the correct place' do
-      post :create, :ssh_public_key => {:name => 'Test Name', :key => ExampleKeys.good_rsa}
+      post :create, :ssh_public_key => {:name => 'Test Name', :key => ExampleKeys.good_rsa }
       response.should be_redirect
       response.should redirect_to edit_user_registration_path
     end
 
     it 'should render the new template without valid data' do
-      post :create, :ssh_public_key => {:name => 'Test Name', :key => ExampleKeys.bad_rsa}
+      post :create, :ssh_public_key => {:name => 'Test Name', :key => ExampleKeys.bad_rsa }
       response.should render_template :new
     end
 

@@ -78,9 +78,9 @@ describe SshPublicKey do
       user_two.should be_able_to :create, SshPublicKey
     end
 
-    it 'should only allow the owner to edit the public key' do
-      user_one.should     be_able_to :edit, public_key
-      user_two.should_not be_able_to :edit, public_key
+    it 'should only allow the owner to update the public key' do
+      user_one.should     be_able_to :update, public_key
+      user_two.should_not be_able_to :update, public_key
     end
 
     it 'should only allow the owner to remove the public key' do

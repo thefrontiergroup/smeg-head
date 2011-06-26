@@ -3,6 +3,7 @@ class Users::RepositoriesController < ApplicationController
   before_filter :authenticate_user!
 
   inherit_resources
+  load_and_authorize_resource :repository
 
   actions :new, :create
 
