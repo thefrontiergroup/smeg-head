@@ -1,7 +1,11 @@
 require 'tempfile'
+require 'authorized_keys'
 
 class SshPublicKeyManager
   include SmegHead::Commandable
+
+  cattr_accessor :authorized_keys_path
+  self.authorized_keys_path ||= '~/.ssh/authorized_keys'
 
   attr_reader :key
 

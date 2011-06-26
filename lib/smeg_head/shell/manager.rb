@@ -7,7 +7,7 @@ module SmegHead
   module Shell
     class Manager
 
-      attr_reader :user_id, :user, :repository, :command, :ssh_key
+      attr_reader :user_id, :user, :repository, :command, :ssh_key, :owner
 
       def initialize(arguments)
         @arguments = arguments.first
@@ -30,14 +30,26 @@ module SmegHead
         exit 1
       end
 
+      # Load the current ssh key, depending on the type of key found
+      # we will then load the child data.
+      def prepare_ssh_public_key
+        key_id = @arguments[0].presence
+        debug "Loading the current SSH Public Key"
+        catching_not_found "Unknown SSH Key - Something has gone wrong deep inside Smeg Head - Please remove and readd the key." do
+          @ssh_key = SshPublicKey.find(key_id.to_i)
+        end
+      end
+
+      def prepare_owner
+        @owner = ssh_key.owner
+        case owner
+        when User then prepare_user
+        end
+      end
+
       # Lookup the current user, raising an exception when we don't know who said user is.
       def prepare_user
-        @user_id = @arguments[0].presence
-        raise Error, "Smeg Head was configured incorrectly for this user" unless user_id
-        debug "Attempting User.find(#{user_id.to_i.inspect})"
-        catching_not_found "Unable to find the user for your ssh key - Please check your account is configured correctly" do
-          @user = User.find(user_id.to_i)
-        end
+        @user = @owner
       end
 
       # Checks for a valid command from the SSH_ORIGINAL_COMMAND environment variable.
@@ -60,8 +72,11 @@ module SmegHead
       # are performed after this point as part of the pre-receive hook.
       def check_permission
         debug "Checking permissions"
-        unless repository.accessible_by?(current_user)
-          raise Error, "I'm sorry Dave, I can't let you do that."
+        case command.verb
+        when :read
+          raise Error, "I'm sorry Dave, I can't let you read this repository." unless repository.readable_by?(ssh_key)
+        when :write
+          raise Error, "I'm sorry Dave, I can't let you write to this repository." unless repository.writeable_by?(ssh_key)
         end
       end
 
@@ -129,7 +144,7 @@ module SmegHead
         {
           :repository_identifier    => repository.identifier,
           :original_repository_path => command.identifier,
-          :current_user_id          => user.id,
+          :current_user_id          => user.try(:id),
         }
       end
 

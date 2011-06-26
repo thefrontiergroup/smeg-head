@@ -15,6 +15,9 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 # Use a mocked out hub.
 SmegHead.hub = SmegHead::MockHub.new
+# And a mocked out authorized key file.
+ExampleKeys.mock_authorized_keys!
+at_exit { ExampleKeys.restore_authorized_keys! }
 
 RSpec.configure do |config|
   config.mock_with :rr
@@ -26,4 +29,5 @@ RSpec.configure do |config|
   config.after(:each) do
     FileUtils.rm_rf(RepositoryManager.base_path) if defined?(RepositoryManager)
   end
+
 end

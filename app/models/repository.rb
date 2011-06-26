@@ -96,7 +96,7 @@ class Repository < ActiveRecord::Base
   # @return [Boolean] true iff the user can perform the requested ref change.
   def allow_ref_change?(user, ref_change)
     # TODO: Implement ACL-based security checks here.
-    return true
+    writeable_by? user
   end
 
   # General access check for the given user - Primarily, is the user able
@@ -104,7 +104,24 @@ class Repository < ActiveRecord::Base
   # @param [User] user the user to check for
   # @return [Boolean] true iff the user can access the given repository.
   def accessible_by?(user)
-    true
+    owner == user
+  end
+
+  # Checks if the given ssh public key can read this repository. Namely,
+  # this involves a short cut check to see if the user is a valid person of
+  # interest (that is, they have access to the current repository) or
+  # the given key is a deploy key for this repository.
+  # @param [SshPublicKey] ssh_public_key the key to check read permissions for
+  # @return [true, false] whether or not the specified key can read this repository.
+  def readable_by?(ssh_public_key)
+    accessible_by? ssh_public_key.owner
+  end
+
+  # Checks whether the given ssh public key has write access to this repository.
+  # Typically, this basically checks it is a user associated (versus a deploy key)
+  # and that said user can
+  def writeable_by?(ssh_public_key)
+    ssh_public_key.owner.is_a?(User) && accessible_by?(ssh_public_key.owner)
   end
 
   # Converts the repository to a ssh url with a given default host.
