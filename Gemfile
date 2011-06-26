@@ -29,10 +29,13 @@ group :test, :development do
   gem 'rspec-rails', '~> 2.1'
   gem 'machinist',   '>= 2.0.0.beta2', :require => 'machinist/active_record'
   gem 'forgery',                       :require => 'forgery'
-  # Guard basics
   gem 'guard', :require => nil
   gem 'guard-rspec', :require => nil
-
+  gem 'guard-ego', :require => nil
+  gem 'guard-bundler', :require => nil
+  gem 'guard-cucumber', :require => nil
+  gem 'guard-pow', :require => nil
+  gem 'launchy', :require => nil
   gem 'ruby-debug',   :platforms => :ruby_18
   gem 'ruby-debug19', :platforms => :ruby_19
 end
@@ -50,6 +53,7 @@ group :test do
   gem 'capybara-webkit'
   gem 'headless', '~> 0.1.0'
   gem 'database_cleaner'
+
 end
 
 group :test_mac do
