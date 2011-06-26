@@ -5,28 +5,29 @@ Feature: Account Management
   
   Scenario: Signing up with Valid Details
     Given I am signed out
-    And I am on the new user page
+    And I am on the sign up page
     When I fill in the following:
-      | Login                 | test_user        |
+      | User name             | test_user        |
       | Email                 | test@example.com |
       | Password              | password         |
       | Confirm your password | password         |
-    And I click "Create my Account"
+    And I press "Sign Up"
     Then I should be signed in
-    And I should be redirected to the user dashboard
+    And I should be on the home page
   
   Scenario: Signing up with Invalid Details
   
   Scenario: Editing my Profile
-    Given I am a new, authenticated user
+    Given I am a new, authenticated user with the password "password"
     When I go to the edit profile page
     And I fill in "Email" with "new_email@example.com"
-    And I click "Update Profile"
-    Then I should be on the edit profile page
+    And I fill in "Current password" with "password"
+    And I press "Update Profile"
+    Then I should be on the home page
     And my email should be "new_email@example.com"
 
   Scenario: Closing my Account
     Given I am a new, authenticated user
     When I go to the edit profile page
-    And I click "Close my account"
+    And I press "Close my account"
     Then my account should no longer exist

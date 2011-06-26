@@ -48,7 +48,7 @@ describe Repository do
 
   describe 'the calculated clone path' do
 
-    let(:user)       { User.make! :login => 'Archibald' }
+    let(:user)       { User.make! :user_name => 'Archibald' }
     let(:repository) { Repository.make! :owner => user, :name => 'Ninja Skulls of Doom' }
 
     it 'should calculate the correct value' do
@@ -58,7 +58,7 @@ describe Repository do
     it 'should change when we update the owner' do
       pending
       expect do
-        repository.owner.update_attributes! :login => Forgery(:internet).user_name
+        repository.owner.update_attributes! :user_name => Forgery(:internet).user_name
       end.to change(repository, :calculated_clone_path)
     end
 

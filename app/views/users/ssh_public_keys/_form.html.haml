@@ -3,4 +3,4 @@
   ~ form.input :key, :html => {:rows => 5}
 
 = form.buttons do
-  = form.commit_button
+  = form.commit_button(form.object.new_record? ? 'Add SSH Public Key' : 'Update SSH Public Key')

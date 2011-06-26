@@ -1,4 +1,12 @@
 module HtmlSelectorsHelpers
+
+  def field_selector_for(name)
+    case name
+    when /the ssh key contents/
+      'li#ssh_public_key_key_input'
+    end
+  end
+
   # Maps a name to a selector. Used primarily by the
   #
   #   When /^(.+) within (.+)$/ do |step, scope|
@@ -10,7 +18,10 @@ module HtmlSelectorsHelpers
 
     when /the page/
       "html > body"
-
+    when /the current ssh public key/
+      "ul#ssh-public-keys li.ssh-public-key:last"
+    when /a ssh public key/
+      "ul#ssh-public-keys li.ssh-public-key"
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #
