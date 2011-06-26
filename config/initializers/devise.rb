@@ -3,11 +3,10 @@ Devise.setup do |config|
 
   require 'devise/orm/active_record'
 
-  config.stretches = 10
-  config.encryptor = :bcrypt
-  config.pepper    = Settings.devise.fetch(:pepper, ActiveSupport::SecureRandom.hex(64))
-  
-  # config.authentication_keys         = [ :email ]
+  config.stretches                     = 10
+  config.encryptor                     = :bcrypt
+  config.pepper                        = Settings.devise.fetch(:pepper, ActiveSupport::SecureRandom.hex(64))
+  config.authentication_keys           = [:email]
   # config.params_authenticatable      = true
   # config.http_authenticatable        = false
   # config.http_authenticatable_on_xhr = true

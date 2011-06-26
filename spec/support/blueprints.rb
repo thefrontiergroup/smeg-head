@@ -6,7 +6,7 @@ end
 
 User.blueprint do
   email                 { Forgery(:internet).email_address }
-  login                 { Forgery(:internet).user_name }
+  user_name             { Forgery(:internet).user_name }
   password              { Forgery(:basic).password }
   password_confirmation { object.password }
 end

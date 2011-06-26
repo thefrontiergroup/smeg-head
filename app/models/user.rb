@@ -2,12 +2,12 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :token_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable
 
-  attr_accessible :login, :email, :password, :password_confirmation, :remember_me
+  attr_accessible :user_name, :email, :password, :password_confirmation, :remember_me
 
-  validates :login, :presence => true, :uniqueness => true
-  validate  :validate_login_is_unchanged
+  validates :user_name, :presence => true, :uniqueness => {:case_sensitive => false}
+  validate  :validate_user_name_is_unchanged
 
-  is_sluggable :login
+  is_sluggable :user_name
 
   has_many :repositories, :as => :owner
   has_many :ssh_public_keys, :as => :owner
@@ -19,8 +19,8 @@ class User < ActiveRecord::Base
 
   protected
 
-  def validate_login_is_unchanged
-    errors.add :login, :can_not_be_changed if login_changed? and !new_record?
+  def validate_user_name_is_unchanged
+    errors.add :user_name, :can_not_be_changed if user_name_changed? and !new_record?
   end
 
 end

@@ -1,7 +1,7 @@
 %h1 Smeg Head
 
 - if user_signed_in?
-  %span.signed-in-notice Hello there, #{current_user.login}!
+  %span.signed-in-notice Hello there, #{current_user.user_name}!
 
 - semantic_navigation :main do |nav|
   = nav.item 'Home', :link => root_path

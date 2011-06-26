@@ -1,9 +1,9 @@
 %h2 Sign In
 
-= semantic_form_for :resource, :as => resource_name, :url => session_path(resource_name) do |f|
+= semantic_form_for resource, :as => resource_name, :url => session_path(resource_name) do |f|
 
-  = f.inputs :login_details do
-    = f.input :email
+  = f.inputs :signin_details do
+    = f.input :email, :label => 'User name or Email'
     = f.input :password
     - if devise_mapping.rememberable?
       = f.input :remember_me, :as => :boolean
