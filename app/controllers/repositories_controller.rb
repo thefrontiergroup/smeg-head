@@ -9,9 +9,16 @@ class RepositoriesController < ApplicationController
   before_filter :prepare_repository
 
   def edit
+    authorize! :update, repository
   end
 
   def update
+    authorize! :update, repository
+    if repository.update_attributes params[:repository]
+      redirect_to :action => 'tree'
+    else
+      render :action => :edit
+    end
   end
 
   def commits

@@ -1,39 +1,44 @@
 %h2 Edit #{resource_name.to_s.humanize}
 
-= semantic_form_for resource, :as => resource_name, :url => registration_path(resource_name), :html => {:method => :put} do |f|
 
-  = f.inputs :account_details do
-    = f.input :email
-    = f.input :password, :hint => "If you don't wish to change it, leave it blank."
-    = f.input :password_confirmation
-    = f.input :current_password, :hint => "We need your current password to confirm your changes."
+- if can? :update, resource
+  = semantic_form_for resource, :as => resource_name, :url => registration_path(resource_name), :html => {:method => :put} do |f|
+    = f.inputs :account_details do
+      = f.input :email
+      = f.input :password, :hint => "If you don't wish to change it, leave it blank."
+      = f.input :password_confirmation
+      = f.input :current_password, :hint => "We need your current password to confirm your changes."
+    = f.buttons do
+      = f.commit_button "Update Profile"
 
-  = f.buttons do
-    = f.commit_button "Update Profile"
+- if can? :manage_ssh_keys, resource
+  %h3 Manage SSH Public Keys
 
-%h3 Manage SSH Public Keys
+  %ul#ssh-public-keys
+    - if current_user.ssh_public_keys.empty?
+      %li.empty You currently have no ssh public keys.
+    - current_user.ssh_public_keys.each do |key|
+      - if can? :show, key
+        %li.ssh-public-key
+          = link_to key.name, [:users, key], :class => 'key-name'
+          %span.key-fingerprint
+            %code= key.fingerprint
+          - if can? :update, key
+            = link_to 'Edit',   [:edit_users, key], :class => 'edit-key'
+            or
+          - if can? :destroy, key
+            = button_to 'Remove', [:users, key], :class => 'remove-key', :method => :delete, :confirm => "Are you sure?"
 
-%ul#ssh-public-keys
-  - if current_user.ssh_public_keys.empty?
-    %li.empty You currently have no ssh public keys.
-  - current_user.ssh_public_keys.each do |key|
-    %li.ssh-public-key
-      = link_to key.name, [:users, key], :class => 'key-name'
-      %span.key-fingerprint
-        %code= key.fingerprint
-      = link_to 'Edit',   [:edit_users, key], :class => 'edit-key'
-      or
-      = button_to 'Remove', [:users, key], :class => 'remove-key', :method => :delete, :confirm => "Are you sure?"
-
-%h4 Add a New SSH Public Key
-= semantic_form_for SshPublicKey.new, :url => :users_ssh_public_keys, :method => :post do |form|
-  = partial 'users/ssh_public_keys/form', :object => form
+  - if can? :create, SshPublicKey
+    %h4 Add a New SSH Public Key
+    = semantic_form_for SshPublicKey.new, :url => :users_ssh_public_keys, :method => :post do |form|
+      = partial 'users/ssh_public_keys/form', :object => form
 
 
-%h3 Close my account
-
-%p
-  Unhappy?
-  = button_to 'Close my account', registration_path(resource_name), :confirm => 'Are you sure?', :method => :delete
+- if can? :destroy, resource
+  %h3 Close my account
+  %p
+    Unhappy?
+    = button_to 'Close my account', registration_path(resource_name), :confirm => 'Are you sure?', :method => :delete
 
 = link_to "Back", :back

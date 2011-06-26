@@ -26,6 +26,35 @@ describe User do
 
   end
 
+  context 'permissions' do
+
+    let(:user_one)   { User.make! }
+    let(:user_two)   { User.make! }
+    let(:repository) { Repository.make! :owner => user_one }
+
+    it 'should allow anyone to show a user' do
+      user_one.should be_able_to :show, user_one
+      user_two.should be_able_to :show, user_one
+    end
+
+    it 'should allow anyone to index a user' do
+      user_one.should be_able_to :index, user_one
+      user_two.should be_able_to :index, user_one
+    end
+
+    it 'should only allow the user to update themselves' do
+      user_one.should     be_able_to :update, user_one
+      user_two.should_not be_able_to :update, user_one
+    end
+
+    it 'should only allow the the user to destroy themselves' do
+      user_one.should     be_able_to :destroy, user_one
+      user_two.should_not be_able_to :destroy, user_one
+    end
+
+  end
+
+
   it_should_behave_like 'a sluggable model'
 
   it 'should use the correct slug source' do
