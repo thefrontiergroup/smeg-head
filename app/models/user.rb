@@ -17,6 +17,12 @@ class User < ActiveRecord::Base
 
   alias path_prefix to_param
 
+  delegate :can?, :cannot?, :to => :ability
+
+  def ability
+    @ability ||= Ability.new(self)
+  end
+
   protected
 
   def validate_user_name_is_unchanged

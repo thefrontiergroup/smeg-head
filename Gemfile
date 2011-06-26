@@ -22,6 +22,7 @@ gem 'parslet'
 gem 'inherited_resources'
 
 gem 'navigasmic'
+gem 'cancan'
 gem 'nestive', :git => 'git://github.com/sj26/nestive.git', :require => ['nestive', 'nestive/railtie']
 
 group :test, :development do

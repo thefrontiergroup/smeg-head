@@ -10,6 +10,39 @@ describe Repository do
     it { should validate_presence_of :name, :owner }
   end
 
+  context 'permissions' do
+
+    let(:user_one)   { User.make! }
+    let(:user_two)   { User.make! }
+    let(:repository) { Repository.make! :owner => user_one }
+
+    it 'should allow anyone to create a repository' do
+      user_one.should be_able_to :create, Repository
+      user_two.should be_able_to :create, Repository
+    end
+
+    it 'should allow anyone to show a repository' do
+      user_one.should be_able_to :show, repository
+      user_two.should be_able_to :show, repository
+    end
+
+    it 'should allow anyone to index a repository' do
+      user_one.should be_able_to :index, repository
+      user_two.should be_able_to :index, repository
+    end
+
+    it 'should only allow the owner to edit a repository' do
+      user_one.should     be_able_to :edit, repository
+      user_two.should_not be_able_to :edit, repository
+    end
+
+    it 'should only allow the owner to destroy a repository' do
+      user_one.should     be_able_to :destroy, repository
+      user_two.should_not be_able_to :destroy, repository
+    end
+
+  end
+
   describe "repository identifier" do
 
     it "does not allow anyone to set the identifier" do

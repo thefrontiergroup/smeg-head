@@ -41,6 +41,7 @@ GEM
     bcrypt-ruby (2.1.4)
     blankslate (2.1.2.4)
     builder (2.1.2)
+    cancan (1.6.5)
     capybara (0.4.1.2)
       celerity (>= 0.7.9)
       culerity (>= 0.2.4)
@@ -251,6 +252,7 @@ PLATFORMS
 
 DEPENDENCIES
   angry_shell
+  cancan
   capybara
   capybara-webkit
   cucumber-rails

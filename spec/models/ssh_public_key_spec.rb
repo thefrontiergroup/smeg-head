@@ -67,6 +67,39 @@ describe SshPublicKey do
 
   end
 
+  context 'permissions' do
+
+    let(:user_one)   { User.make! }
+    let(:user_two)   { User.make! }
+    let(:public_key) { SshPublicKey.make! :owner => user_one }
+
+    it 'should let you anyone make public keys' do
+      user_one.should be_able_to :create, SshPublicKey
+      user_two.should be_able_to :create, SshPublicKey
+    end
+
+    it 'should only allow the owner to edit the public key' do
+      user_one.should     be_able_to :edit, public_key
+      user_two.should_not be_able_to :edit, public_key
+    end
+
+    it 'should only allow the owner to remove the public key' do
+      user_one.should     be_able_to :destroy, public_key
+      user_two.should_not be_able_to :destroy, public_key
+    end
+
+    it 'should only allow the owner to show the public key' do
+      user_one.should     be_able_to :show, public_key
+      user_two.should_not be_able_to :show, public_key
+    end
+
+    it 'should only allow the owner to index the public key' do
+      user_one.should     be_able_to :index, public_key
+      user_two.should_not be_able_to :index, public_key
+    end
+
+  end
+
   context 'creating a key' do
 
     it 'should tell the key manager to record the key'

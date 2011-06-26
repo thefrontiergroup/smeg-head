@@ -7,7 +7,7 @@ module SmegHead
   module Shell
     class Manager
 
-      attr_reader :user_id, :user, :repository, :command
+      attr_reader :user_id, :user, :repository, :command, :ssh_key
 
       def initialize(arguments)
         @arguments = arguments.first

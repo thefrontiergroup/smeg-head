@@ -8,6 +8,12 @@ class RepositoriesController < ApplicationController
   before_filter :prepare_owner
   before_filter :prepare_repository
 
+  def edit
+  end
+
+  def update
+  end
+
   def commits
   end
 
