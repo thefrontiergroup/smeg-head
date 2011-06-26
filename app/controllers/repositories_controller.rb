@@ -49,8 +49,8 @@ class RepositoriesController < ApplicationController
   private
 
   def prepare_owner
-    source = request.path_parameters
-    if source.has_key?(:user_id)
+    source = request.path_parameters.with_indifferent_access
+    if source[:user_id].present?
       @owner = @user = User.find_using_slug!(source[:user_id])
     else # Fallback to other
       raise ActiveRecord::RecordNotFound
