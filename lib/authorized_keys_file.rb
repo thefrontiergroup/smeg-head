@@ -32,6 +32,19 @@ class AuthorizedKeysFile
     true
   end
 
+  # Checks whether or not the current authorized keys file contains the specified key.
+  # @param [String] key the ssh key to check for
+  # @return [true, false] whether or not the given key is in the authorized keys file
+  def has_key?(key)
+    has_key = false
+    with_file do |f|
+      lines = f.readlines
+      key_matcher = /(\s|^)#{Regexp.escape(key)}(\s|$)/
+      has_key = lines.any? { |line| line =~ key_matcher }
+    end
+    has_key
+  end
+
   protected
 
   def with_file(mode = 'r+')

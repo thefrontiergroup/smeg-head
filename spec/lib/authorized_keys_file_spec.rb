@@ -4,9 +4,10 @@ require 'tempfile'
 
 describe AuthorizedKeysFile do
 
-  let(:temporary_path) { Tempfile.new('authorized_keys').tap(&:close).path }
-  let(:auth_keys_file) { AuthorizedKeysFile.new temporary_path }
-  let(:example_key)    { ExampleKeys.good_dsa }
+  let(:temporary_path)  { Tempfile.new('authorized_keys').tap(&:close).path }
+  let(:auth_keys_file)  { AuthorizedKeysFile.new temporary_path }
+  let(:example_key)     { ExampleKeys.good_dsa }
+  let(:example_key_two) { ExampleKeys.good_rsa }
 
   describe 'adding a key' do
 
@@ -33,8 +34,6 @@ describe AuthorizedKeysFile do
 
   describe 'removing a key' do
 
-    let(:example_key_two) { ExampleKeys.good_rsa }
-
     before :each do
       auth_keys_file.add example_key
       auth_keys_file.add example_key_two
@@ -57,6 +56,31 @@ describe AuthorizedKeysFile do
       original = File.read(temporary_path)
       auth_keys_file.remove "ssh-blah some-random-non-existant-key"
       File.read(temporary_path).should == original
+    end
+
+  end
+
+  describe 'checking for the existance of a key' do
+
+    before :each do
+      auth_keys_file.add example_key
+    end
+
+    it 'should correctly reflect existing keys' do
+      auth_keys_file.should have_key example_key
+      auth_keys_file.should_not have_key example_key_two
+    end
+
+    it 'should correctly reflect keys that have been added' do
+      auth_keys_file.add example_key_two
+      auth_keys_file.should have_key example_key
+      auth_keys_file.should have_key example_key_two
+    end
+
+    it 'should correctly reflect keys that have been removed' do
+      auth_keys_file.remove example_key
+      auth_keys_file.should_not have_key example_key
+      auth_keys_file.should_not have_key example_key_two
     end
 
   end

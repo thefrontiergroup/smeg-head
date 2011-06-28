@@ -14,3 +14,9 @@ World Warden::Test::Helpers
 After { Warden.test_reset! }
 
 Capybara.javascript_driver = :webkit # Use capbara-webkit.
+
+# Use a mocked out hub.
+SmegHead.hub = SmegHead::MockHub.new
+# And a mocked out authorized key file.
+ExampleKeys.mock_authorized_keys!
+at_exit { ExampleKeys.restore_authorized_keys! }
