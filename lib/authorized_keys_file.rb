@@ -59,7 +59,7 @@ class AuthorizedKeysFile
   ensure
     # Automatically takes care of setting the permissions of the dirs if they are created.
     File.chmod 0700, directory unless directory_existed
-    File.chmod 0600, @path unless file_existed
+    File.chmod 0600, @path     unless file_existed
   end
 
   def generate_key(encoded_key, options)
