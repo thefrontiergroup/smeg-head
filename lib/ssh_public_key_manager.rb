@@ -7,6 +7,8 @@ class SshPublicKeyManager
   cattr_accessor :authorized_keys_path
   self.authorized_keys_path ||= '~/.ssh/authorized_keys'
 
+  DEFAULT_OPTIONS = {:port_forwarding => false, :X11_forwarding => false, :agent_forwarding => false}
+
   attr_reader :key
 
   def initialize(key)
@@ -28,7 +30,14 @@ class SshPublicKeyManager
 
   # Adds this key to the authorized keys file
   def add
-    authorized_keys_file.add raw_key
+    authorized_keys_file.add raw_key, DEFAULT_OPTIONS.merge(shell_command_for_key)
+  end
+
+  def shell_command_for_key
+    default_shell = "#{Rails.root.join('script', 'smeg-head-shell')} %s"
+    current_shell = Settings.smeg_head.fetch(:shell_path, default_shell)
+    command_value = current_shell % key.id.to_s
+    {:command => command_value}
   end
 
   # Removes this key from the authorized keys file

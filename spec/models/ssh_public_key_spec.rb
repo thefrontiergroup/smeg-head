@@ -115,6 +115,17 @@ describe SshPublicKey do
       current_key_lines.first.should include public_key.key
     end
 
+    it 'should use secure key options' do
+      public_key.save
+      parts = Shellwords.shellwords(current_key_lines.first)
+      parts.first.should_not include public_key.key
+      options = parts.first.split ','
+      %w(no-port-forwarding no-X11-forwarding no-agent-forwarding).each do |option|
+        options.should include option
+      end
+      options.should be_any { |o| o =~ /^command=/}
+    end
+
     it 'should remove the key when it is destroyed' do
       public_key.save
       current_key_lines.should have(1).line
