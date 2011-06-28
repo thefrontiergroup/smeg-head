@@ -1,6 +1,6 @@
 # A simple wrapper script to make it easier to manage a authorized key file by adding
 # and removing lines in a simplistic faction.
-class AuthorizedKeys
+class AuthorizedKeysFile
 
   # Initializes a new authorized keys file at the given location.
   # @param [String] path the path to the authorized keys file
@@ -11,7 +11,7 @@ class AuthorizedKeys
   # Adds a new key to the authorized keys file, saving the changes automatically.
   # @param [String] key the ssh key to add
   # @param [Hash<Symbol => [Boolean,String]>] options options for this key, auto converted.
-  def add!(key, options = {})
+  def add(key, options = {})
     with_file('a+') do |f|
       f.puts generate_key(key, options)
     end
@@ -20,7 +20,7 @@ class AuthorizedKeys
 
   # Removes the given ssh key from the file in a clean manner. Will not remove it if non-match.
   # @param [String] key the ssh key to remove
-  def remove!(key)
+  def remove(key)
     with_file do |f|
       lines = f.readlines
       key_matcher = /(\s|^)#{Regexp.escape(key)}(\s|$)/
