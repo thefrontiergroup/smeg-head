@@ -10,7 +10,7 @@ module SmegHead
       attr_reader :user, :repository, :command, :ssh_key, :owner
 
       def initialize(arguments)
-        @arguments = arguments.first
+        @arguments = arguments
       end
 
       def self.start(arguments = ARGV)
@@ -20,9 +20,11 @@ module SmegHead
       # The main entry point for the program - Will perform all of the setup
       # required and correctly show any error messages encountered.
       def start
-        prepare_user
+        prepare_ssh_public_key
+        prepare_owner
         unpack_command
         prepare_repository
+        check_permission
         setup_environment
         with_drb_server(self) { execute_command! }
       rescue Error => e
@@ -34,6 +36,7 @@ module SmegHead
       # we will then load the child data.
       def prepare_ssh_public_key
         key_id = @arguments[0].presence
+        raise Error, 'No SSH Public Key was specified' unless key_id.present?
         debug "Loading the current SSH Public Key"
         catching_not_found "Unknown SSH Key - Something has gone wrong deep inside Smeg Head - Please remove and readd the key." do
           @ssh_key = SshPublicKey.find(key_id.to_i)
@@ -91,12 +94,10 @@ module SmegHead
       # Automatically runs the correct command under a given repository by
       # using the current
       def execute_command!
-        manager = repository.manager
         debug "Running #{command.verb} under #{manager.path}"
         case command.verb
         when :read  then manager.upload_pack!
         when :write then manager.receive_pack!
-        else raise Error, "Unknown repository verb of #{command.verb}"
         end
       end
 
@@ -121,6 +122,11 @@ module SmegHead
 
       private
 
+      # Extract the manager out into a special method to make it easier to mock out.
+      def manager
+        @_manager ||= repository.try(:manager)
+      end
+
       def with_drb_server(ctx)
         server = DRb::DRbServer.new 'drbunix:', ctx
         ENV['SH_DRB_SERVER'] = server.uri
@@ -137,7 +143,7 @@ module SmegHead
       end
 
       def debug(message)
-        $stderr.puts "[DEBUGGING] #{message}"
+        $stderr.puts "[DEBUGGING] #{message}" if Rails.env.development?
       end
 
       def current_context_env
