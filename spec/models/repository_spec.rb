@@ -145,6 +145,55 @@ describe Repository do
       Repository.normalize_path('a//b').should == 'a/b'
     end
 
+    describe 'repository permissions checks' do
+
+      let(:user)             { User.make! }
+      let(:other_user)       { User.make! }
+      let(:public_key)       { SshPublicKey.make :owner => user }
+      let(:other_public_key) { SshPublicKey.make :owner => other_user }
+      let(:repository)       { Repository.make! }
+      let(:ability)          { Ability.new(user) }
+      let(:other_ability)    { Ability.new(other_user) }
+
+      before :each do
+        stub(user).ability       { ability }
+        stub(other_user).ability { other_ability }
+      end
+
+      describe 'readable by' do
+
+        it 'should use the ability check when logged as a user' do
+          mock(ability).can?(:read, repository) { true }
+          repository.readable_by?(public_key)
+        end
+
+        it 'should return the correct value dependent on the ability' do
+          stub(ability).can?(:read, repository) { true }
+          stub(other_ability).can?(:read, repository) { false }
+          repository.should be_readable_by public_key
+          repository.should_not be_readable_by other_public_key
+        end
+
+      end
+
+      describe 'writeable by' do
+
+        it 'should use the ability check when logged as a user' do
+          mock(ability).can?(:update, repository) { true }
+          repository.writeable_by?(public_key)
+        end
+
+        it 'should return the correct value dependent on the ability' do
+          stub(ability).can?(:update, repository) { true }
+          stub(other_ability).can?(:update, repository) { false }
+          repository.should be_writeable_by public_key
+          repository.should_not be_writeable_by other_public_key
+        end
+
+      end
+
+    end
+
   end
 
 end
