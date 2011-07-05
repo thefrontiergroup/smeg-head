@@ -121,7 +121,7 @@ class Repository < ActiveRecord::Base
   # @param [User] user the user to check
   # @return [true,false] whether or not the given user is a member.
   def member?(user)
-    user == owner
+    user == owner or collaborator?(user)
   end
 
   # Checks if the given user is an administrator for this repository.
