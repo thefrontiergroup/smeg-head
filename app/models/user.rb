@@ -10,7 +10,9 @@ class User < ActiveRecord::Base
   is_sluggable :user_name
 
   has_many :repositories, :as => :owner
-  has_many :ssh_public_keys, :as => :owner
+  has_many :ssh_public_keys, :as => :owner, :dependent => :destroy
+  has_many :collaborations, :dependent => :destroy
+  has_many :collaborated_repositories, :through => :collaborations, :source => :repository
 
   has_many :group_memberships
   has_many :groups, :through => :group_memberships

@@ -4,6 +4,8 @@ describe Repository do
 
   context "associations" do
     it { should belong_to :owner, :polymorphic => true }
+    it { should have_many :collaborations, :dependent => :destroy }
+    it { should have_many :collaborators, :through => :collaborations, :source => :user }
   end
 
   context "validations" do
@@ -207,13 +209,13 @@ describe Repository do
       describe 'readable by' do
 
         it 'should use the ability check when logged as a user' do
-          mock(ability).can?(:read, repository) { true }
+          mock(ability).can?(:show, repository) { true }
           repository.readable_by?(public_key)
         end
 
         it 'should return the correct value dependent on the ability' do
-          stub(ability).can?(:read, repository) { true }
-          stub(other_ability).can?(:read, repository) { false }
+          stub(ability).can?(:show, repository) { true }
+          stub(other_ability).can?(:show, repository) { false }
           repository.should be_readable_by public_key
           repository.should_not be_readable_by other_public_key
           repository.should be_readable_by user
@@ -225,8 +227,9 @@ describe Repository do
       describe 'writeable by' do
 
         it 'should use the ability check when logged as a user' do
-          mock(ability).can?(:update, repository) { true }
+          mock(repository).member?(user).times(2)
           repository.writeable_by?(public_key)
+          repository.writeable_by?(user)
         end
 
         it 'should only allow members to write to a repository' do

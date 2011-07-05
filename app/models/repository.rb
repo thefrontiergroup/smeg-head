@@ -3,6 +3,9 @@ class Repository < ActiveRecord::Base
 
   belongs_to :owner, :polymorphic => true
 
+  has_many :collaborations, :dependent => :destroy
+  has_many :collaborators, :through => :collaborations, :source => :user
+
   validates :name, :owner, :presence => true
   validates :publically_accessible, :inclusion => {:in => [true, false]}
 

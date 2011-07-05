@@ -10,7 +10,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110705062034) do
+ActiveRecord::Schema.define(:version => 20110705101654) do
+
+  create_table "collaborations", :force => true do |t|
+    t.integer  "repository_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "collaborations", ["repository_id", "user_id"], :name => "index_collaborations_on_repository_id_and_user_id"
 
   create_table "group_memberships", :force => true do |t|
     t.integer  "group_id"
