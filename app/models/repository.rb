@@ -103,6 +103,20 @@ class Repository < ActiveRecord::Base
     writeable_by? user
   end
 
+  # Checks if the given user is a member for this repository.
+  # @param [User] user the user to check
+  # @return [true,false] whether or not the given user is a member.
+  def member?(user)
+    user == owner
+  end
+
+  # Checks if the given user is an administrator for this repository.
+  # @param [User] user the user to check
+  # @return [true,false] whether or not the given user is an administrator.
+  def administrator?(user)
+    user == owner
+  end
+
   # Checks if the given ssh public key or user can read this repository. Namely,
   # this involves a short cut check to see if the user is a valid person of
   # interest (that is, they have access to the current repository) or
@@ -111,12 +125,9 @@ class Repository < ActiveRecord::Base
   # @return [true, false] whether or not the specified key can read this repository.
   def readable_by?(target)
     case target
-    when User
-      target.ability.can? :read, self
-    when SshPublicKey
-      readable_by? target.owner
-    else
-      false
+    when User         then target.ability.can? :show, self
+    when SshPublicKey then readable_by? target.owner
+    else false
     end
   end
 
@@ -125,12 +136,9 @@ class Repository < ActiveRecord::Base
   # and that said user can
   def writeable_by?(target)
     case target
-    when User
-      target.ability.can? :update, self
-    when SshPublicKey
-      writeable_by? target.owner
-    else
-      false
+    when User         then member? target
+    when SshPublicKey then writeable_by? target.owner
+    else false
     end
   end
 
