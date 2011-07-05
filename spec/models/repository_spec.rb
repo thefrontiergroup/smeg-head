@@ -172,6 +172,8 @@ describe Repository do
           stub(other_ability).can?(:read, repository) { false }
           repository.should be_readable_by public_key
           repository.should_not be_readable_by other_public_key
+          repository.should be_readable_by user
+          repository.should_not be_readable_by other_user
         end
 
       end
@@ -188,6 +190,8 @@ describe Repository do
           stub(other_ability).can?(:update, repository) { false }
           repository.should be_writeable_by public_key
           repository.should_not be_writeable_by other_public_key
+          repository.should be_writeable_by user
+          repository.should_not be_writeable_by other_user
         end
 
       end
