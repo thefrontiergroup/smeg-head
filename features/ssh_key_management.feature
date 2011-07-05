@@ -11,6 +11,7 @@ Feature: SSH Key Management
     And I press "Add SSH Public Key"
     Then I should be on the edit profile page
     And I should have a new ssh public key with the name "my example key"
+    And I should see the current key in my authorized keys file
     
   Scenario: Creating a bad SSH Key
     Given I am a new, authenticated user
@@ -27,6 +28,7 @@ Feature: SSH Key Management
     And I am on the edit profile page
     When I press "Remove" within the current ssh public key
     Then I should not have an ssh public key with the name "my example key"
+    And I should no longer see the current key in my authorized keys file
   
   Scenario: Viewing my SSH keys
     Given I am a new, authenticated user

@@ -11,7 +11,11 @@ class SshPublicKey < ActiveRecord::Base
   validates   :name, :uniqueness => {:scope => [:owner_type, :owner_id]}
   validates   :key, :fingerprint, :uniqueness => true
   validate    :validate_ssh_key_format
-  before_save :cache_key_fingerprint
+
+  before_save   :cache_key_fingerprint
+  after_create  :record_key_addition
+  after_destroy :record_key_removal
+  after_update  :record_key_change, :if => :key_changed?
 
   attr_accessible :name, :key
 
@@ -53,6 +57,20 @@ class SshPublicKey < ActiveRecord::Base
   end
 
   protected
+
+  def record_key_addition
+    to_manager.add
+  end
+
+  def record_key_removal
+    to_manager.remove
+  end
+
+  def record_key_change
+    manager = to_manager
+    manager.remove true
+    manager.add
+  end
 
   def key_parts
     key.to_s.split(' ', 3)

@@ -44,7 +44,6 @@ def ExampleKeys.mock_authorized_keys!
   test_keys_file.close
   key_stack << SshPublicKeyManager.authorized_keys_path
   SshPublicKeyManager.authorized_keys_path = test_keys_file.path
-  p test_keys_file.path
 end
 
 def ExampleKeys.restore_authorized_keys!

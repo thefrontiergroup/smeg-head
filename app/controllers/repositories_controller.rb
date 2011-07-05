@@ -3,7 +3,7 @@ class RepositoriesController < ApplicationController
   Error = Class.new(StandardError)
 
   attr_reader   :owner, :repository
-  helper_method :owner, :repository, :current_path, :contextual_repo_path
+  helper_method :owner, :repository, :current_path
 
   before_filter :prepare_owner
   before_filter :prepare_repository
@@ -81,21 +81,5 @@ class RepositoriesController < ApplicationController
   def check_type!(entry, type = Grit::Tree)
     raise Error, 'Unknown object' unless entry.presence.is_a?(type)
   end
-
-  def contextual_repo_path(context, repository, name, *args)
-    options = args.extract_options!
-    if options[:path].is_a?(Array)
-      path = options.delete(:path)
-      options[:path] = path.join("/") if path.present?
-    end
-    args << options
-    case context
-    when User
-      send(:"user_repository_#{name}_path", context, repository, *args)
-    else
-      send(:"client_project_repository_#{name}_path", context, context.client, repository, *args)
-    end
-  end
-
 
 end

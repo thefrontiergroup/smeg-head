@@ -24,7 +24,6 @@ class Ability
     can :update,          User, :id => user.id
     can :destroy,         User, :id => user.id
     can :manage_ssh_keys, User, :id => user.id
-
   end
 
 

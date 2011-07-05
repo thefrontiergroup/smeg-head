@@ -100,15 +100,55 @@ describe SshPublicKey do
 
   end
 
-  context 'creating a key' do
+  context 'managing the key file' do
 
-    it 'should tell the key manager to record the key'
+    around(:each) do |block|
+      ExampleKeys.with_mock_authorized_keys &block
+    end
 
-  end
+    let(:public_key) { SshPublicKey.make }
 
-  context 'destroying a key' do
+    it 'should record the key when it is created' do
+      current_key_lines.should be_empty
+      public_key.save
+      current_key_lines.should have(1).line
+      current_key_lines.first.should include public_key.key
+    end
 
-    it 'should tell the key manager to remove the key'
+    it 'should use secure key options' do
+      public_key.save
+      parts = Shellwords.shellwords(current_key_lines.first)
+      parts.first.should_not include public_key.key
+      options = parts.first.split ','
+      %w(no-port-forwarding no-X11-forwarding no-agent-forwarding).each do |option|
+        options.should include option
+      end
+      options.should be_any { |o| o =~ /^command=/}
+    end
+
+    it 'should remove the key when it is destroyed' do
+      public_key.save
+      current_key_lines.should have(1).line
+      public_key.destroy
+      current_key_lines.should have(:no).line
+    end
+
+    it 'should tell the key manager to update the key when it is changed' do
+      public_key.save
+      original_lines = current_key_lines
+      original_lines.should have(1).line
+      public_key.update_attributes :key => ExampleKeys.good_dsa
+      new_lines = current_key_lines
+      new_lines.should have(1).line
+      new_lines.should_not == original_lines
+      new_lines.first.should include ExampleKeys.good_dsa
+    end
+
+    private
+
+    def current_key_lines
+      File.readlines SshPublicKeyManager.authorized_keys_path
+    end
 
   end
 

@@ -8,6 +8,7 @@ Given /^I have (.+?) with the ([^\"]*) "([^\"]*)"$/ do |name, field, value|
     object.owner= @user
   end
   object.save!
+  store_as_variable! name, object
 end
 
 Given /^I have no (.+) with the ([^\"]*) "([^\"]*)"$/ do |name, field, value|
@@ -23,13 +24,14 @@ end
 
 Given /^there is (.+) with the ([^\"]*) "([^\"]*)"$/ do |name, field, value|
   field = recognize_attribute_name(field)
-  recognize_model(name).make field => value
+  recognize_model(name).make! field => value
 end
 
 Then /^I should have a new (.+) with the ([^\"]*) "([^\"]*)"$/ do |name, field, value|
   field = recognize_attribute_name(field)
   @user.should_not be_nil
   object = recognize_association(@user, name).last
+  store_as_variable! name, object
   object.should_not be_nil
   object.send(field).to_s.should == value
 end
@@ -48,8 +50,13 @@ Then /^I should not have an? (.+?) with the ([^\"]*) "([^\"]*)"$/ do |name, fiel
 end
 
 
-Then /^the current ([^"]*)'s ([^"]*) should be "([^"]*)"$/ do |object, field, value|
-  object = recognize_model(object).last
+Then /^the current ([^"]*)'s ([^"]*) should be "([^"]*)"$/ do |name, field, value|
+  object = retreive_variable(name)
+  if object
+    object.reload # Ensure it's a fresh instance.
+  else
+     object = recognize_model(name).last
+  end
   object.should be_present
   object.send(recognize_attribute_name(field)).to_s.should == value
 end
