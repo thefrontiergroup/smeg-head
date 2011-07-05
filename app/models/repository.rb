@@ -1,5 +1,5 @@
 require 'repository_manager'
-
+require 'ostruct'
 class Repository < ActiveRecord::Base
 
   belongs_to :owner, :polymorphic => true
@@ -96,7 +96,7 @@ class Repository < ActiveRecord::Base
   # @return [Boolean] true iff the user can perform the requested ref change.
   def allow_ref_change?(user, ref_change)
     # TODO: Implement ACL-based security checks here.
-    writeable_by? user
+    writeable_by? OpenStruct.new(:owner => user)
   end
 
   # Checks if the given ssh public key can read this repository. Namely,

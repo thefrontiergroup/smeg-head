@@ -106,10 +106,13 @@ class RepositoryManager
   # the most common security attacks.
   def run_in_repo!(*args)
     command = build_command(*args)
+    rubyopt, ENV['RUBYOPT'] = ENV['RUBYOPT'], nil
     Dir.chdir path do
       logger.info "Executing command in repo: \"#{command}\" in #{Dir.pwd}"
       system Settings.commands.fetch(:git_shell, 'git-shell'), '-c', command
     end
+  ensure
+    ENV['RUBYOPT'] = rubyopt # Filter out the environment.
   end
 
 end
