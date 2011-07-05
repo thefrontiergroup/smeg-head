@@ -55,7 +55,7 @@ Then /^the current ([^"]*)'s ([^"]*) should be "([^"]*)"$/ do |name, field, valu
   if object
     object.reload # Ensure it's a fresh instance.
   else
-     object = recognize_model(name).last
+    object = recognize_model(name).last
   end
   object.should be_present
   object.send(recognize_attribute_name(field)).to_s.should == value

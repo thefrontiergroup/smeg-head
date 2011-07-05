@@ -106,6 +106,17 @@ class Repository < ActiveRecord::Base
     writeable_by? user
   end
 
+  # Checks if the given user is present in the collaborators collection of this object.
+  # @param [User] user the user to check
+  # @return [true,false] whether or not the given user is a collaborator.
+  def collaborator?(user)
+    if collaborators.loaded?
+      collaborators.include?(user)
+    else
+      collaborators.where(:id => user.id).exists?
+    end
+  end
+
   # Checks if the given user is a member for this repository.
   # @param [User] user the user to check
   # @return [true,false] whether or not the given user is a member.

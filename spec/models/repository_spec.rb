@@ -17,7 +17,7 @@ describe Repository do
 
     let(:user_one)   { User.make! }
     let(:user_two)   { User.make! }
-    let(:user_three)   { User.make! }
+    let(:user_three) { User.make! }
     let(:repository) { Repository.make! :owner => user_one }
 
     before :each do
@@ -244,6 +244,34 @@ describe Repository do
 
       end
 
+    end
+
+  end
+
+  describe 'checking collaborators' do
+
+    let!(:user_one)   { User.make! }
+    let!(:user_two)   { User.make! }
+    let!(:repository) { Repository.make! }
+
+    before :each do
+      repository.collaborators << user_one
+    end
+
+    it "should not load the collection if it isn't already loaded" do
+      repository.reload
+      repository.collaborators.loaded?.should be_false
+      repository.should be_collaborator user_one
+      repository.should_not be_collaborator user_two
+      repository.collaborators.loaded?.should be_false
+    end
+
+    it "should use the loaded collection if possible" do
+      repository.reload
+      repository.collaborators true # Force it to be loaded
+      repository.collaborators.loaded?.should be_true
+      repository.should be_collaborator user_one
+      repository.should_not be_collaborator user_two
     end
 
   end
