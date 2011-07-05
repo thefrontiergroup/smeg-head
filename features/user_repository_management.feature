@@ -39,3 +39,50 @@ Feature: User Repository Management
     When I press "Remove this Repository"
     Then the current repository should no longer exist
     And I should be on the home page
+    
+  Scenario: Viewing a repositories collaborators
+    Given I am a new, authenticated user with the user name "sutto"
+    And I have a repository with the name "Test Repository"
+    And the current repository has the collaborators:
+      | user_name |
+      | tissak    |
+      | sj26      |
+      | ruxton    |
+    When I go to edit the current repository
+    Then I should see 3 collaborators
+    And I should see a collaborator with the user name "tissak"
+    And I should see a collaborator with the user name "sj26"
+    And I should see a collaborator with the user name "ruxton"
+    
+  
+  Scenario: Adding a collaborator to a repository
+    Given I am a new, authenticated user with the user name "sutto"
+    And I have a repository with the name "Test Repository"
+    And I am editing the current repository
+    When I fill in "Collaborator Name" with "sj26"
+    And I press "Add" within the collaborator form
+    Then I should be editing the current repository
+    And I should see 1 collaborator
+    And I should see a collaborator with the user name "sj26"
+    
+  
+  Scenario: Adding an invalid collaborator to a repository
+    Given I am a new, authenticated user with the user name "sutto"
+    And I have a repository with the name "Test Repository"
+    And I am editing the current repository
+    When I fill in "Collaborator Name" with "non-existant-user"
+    And I press "Add" within the collaborator form
+    Then I should be on the current repositories create page
+    And I should see errors on the collaborator user user name
+    
+  
+  Scenario: Removing a collaborator from a repository
+    Given I am a new, authenticated user with the user name "sutto"
+    And I have a repository with the name "Test Repository"
+    And the current repository has the collaborators:
+      | user_name |
+      | sj26      |
+    And I am editing the current repository
+    When I click "Remove" within the collaborator "sj26"
+    Then I should be editing the current repository
+    And I should not see a collaborator with the user name "sj26"

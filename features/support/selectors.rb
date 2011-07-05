@@ -15,7 +15,8 @@ module HtmlSelectorsHelpers
   #
   def selector_for(locator)
     case locator
-
+    when /collaborators?/
+      "ul#collaborators li.collaborator"
     when /the page/
       "html > body"
     when /the current ssh public key/

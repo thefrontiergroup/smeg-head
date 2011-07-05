@@ -60,3 +60,35 @@ Then /^the current ([^"]*)'s ([^"]*) should be "([^"]*)"$/ do |name, field, valu
   object.should be_present
   object.send(recognize_attribute_name(field)).to_s.should == value
 end
+
+Then /^I should see (\d+) (.*)?$/ do |count, name|
+  page.should have_css selector_for(name), :count => count.to_i
+end
+
+Then /^I should (not )?see a (.*) with the id "([^"]*)"$/ do |negative, selector, value|
+  selector = "#{selector_for(selector)}##{value}"
+  if negative
+    page.should_not have_css selector
+  else
+    page.should have_css selector
+  end
+end
+
+Then /^I should (not )?see a (.*) with the class "([^"]*)"$/ do |negative, selector, value|
+  selector = "#{selector_for(selector)}.#{value}"
+  if negative
+    page.should_not have_css selector
+  else
+    page.should have_css selector
+  end
+end
+
+Then /^I should (not )?see a (.*) with the (.*) "([^"]*)"$/ do |negative, selector, field, value|
+  with_scope selector_for(selector) do
+    if negative
+      page.should_not have_content value
+    else
+      page.should have_content value
+    end
+  end
+end
