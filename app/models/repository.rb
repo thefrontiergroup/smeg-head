@@ -4,6 +4,7 @@ class Repository < ActiveRecord::Base
   belongs_to :owner, :polymorphic => true
 
   validates :name, :owner, :presence => true
+  validates :publically_accessible, :inclusion => {:in => [true, false]}
 
   is_sluggable :name
 
@@ -12,6 +13,10 @@ class Repository < ActiveRecord::Base
 
   after_create  :create_repository
   after_destroy :cleanup_repository
+
+  attr_accessible :name, :description, :publically_accessible
+
+  scope :publically_accessible, where(:publically_accessible => true)
 
   # Normalises a path, expanding .. in the path and removing
   # a trailing .git suffix. Will also remove multiple slashes from

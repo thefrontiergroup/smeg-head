@@ -31,15 +31,16 @@ ActiveRecord::Schema.define(:version => 20110705062034) do
   add_index "groups", ["cached_slug"], :name => "index_groups_on_cached_slug"
 
   create_table "repositories", :force => true do |t|
-    t.string   "name",        :null => false
+    t.string   "name",                                    :null => false
     t.text     "description"
-    t.string   "identifier",  :null => false
-    t.string   "cached_slug", :null => false
+    t.string   "identifier",                              :null => false
+    t.string   "cached_slug",                             :null => false
     t.integer  "owner_id"
     t.string   "owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "clone_path"
+    t.boolean  "publically_accessible", :default => true
   end
 
   add_index "repositories", ["clone_path"], :name => "index_repositories_on_clone_path"

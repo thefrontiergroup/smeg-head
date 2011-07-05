@@ -8,6 +8,7 @@ describe Repository do
 
   context "validations" do
     it { should validate_presence_of :name, :owner }
+    it { should validate_inclusion_of :publically_accessible, :in => [true, false] }
   end
 
   context 'permissions' do
