@@ -221,6 +221,11 @@ describe Repository do
           repository.should be_readable_by user
           repository.should_not be_readable_by other_user
         end
+        
+        it 'should be false for anything else' do
+          repository.should_not be_readable_by nil
+          repository.should_not be_readable_by 'some string'
+        end
 
       end
 
@@ -240,6 +245,11 @@ describe Repository do
           repository.should_not be_writeable_by other_public_key
           repository.should     be_writeable_by user
           repository.should_not be_writeable_by other_user
+        end
+        
+        it 'should be false for anything else' do
+          repository.should_not be_writeable_by nil
+          repository.should_not be_writeable_by 'some string'
         end
 
       end
