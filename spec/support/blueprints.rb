@@ -22,6 +22,11 @@ SshPublicKey.blueprint do
   owner { User.make }
 end
 
+Collaboration.blueprint do
+  user       { User.make }
+  repository { Repository.make }
+end
+
 require 'ostruct'
 example_keys = {}
 %w(bad_rsa bad_dsa good_dsa good_rsa good_rsa_4096).each do |file|

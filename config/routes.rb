@@ -4,6 +4,7 @@ SmegHead::Application.routes.draw do
     with_scope_level :resources do
       nested do
         scope ':repository_id', :as => :repository do
+          resources :collaborations
           get    '/',               :as => :root,       :to => 'repositories#tree', :ref => :default
           put    '/',               :as => :update,     :to => 'repositories#update'
           delete '/',               :as => :destroy,    :to => 'repositories#destroy'

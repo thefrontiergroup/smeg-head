@@ -1,0 +1,4 @@
+%h2 Add a Collaborator
+
+= semantic_form_for @collaboration, :url => contextual_repo_path(owner, repository, :collaborations) do |form|
+    = partial 'form', :object => form

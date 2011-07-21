@@ -48,7 +48,7 @@ Feature: User Repository Management
       | tissak    |
       | sj26      |
       | ruxton    |
-    When I go to edit the current repository
+    And I am editing the current repository
     Then I should see 3 collaborators
     And I should see a collaborator with the user name "tissak"
     And I should see a collaborator with the user name "sj26"

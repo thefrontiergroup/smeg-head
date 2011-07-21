@@ -18,6 +18,12 @@ class Ability
     can(:read,    SshPublicKey) { |r| owns? r }
     can(:update,  SshPublicKey) { |r| owns? r }
     can(:destroy, SshPublicKey) { |r| owns? r }
+    
+    # Collaboration Permissions
+    can(:create,  Collaboration)
+    can(:read,    Collaboration) { |c| c.user == user or owns? c.repository }
+    can(:update,  Collaboration) { |c| owns? c.repository }
+    can(:destroy, Collaboration) { |c| c.user == user or owns? c.repository }
 
     # Permissions on oneself
     can :read,            User
