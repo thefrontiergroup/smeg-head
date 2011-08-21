@@ -51,7 +51,7 @@ describe RepositoriesController do
 
       it 'should correctly redirect' do
         response.should be_redirect
-        response.should redirect_to user_repository_root_path(owner, repository)
+        response.should redirect_to user_repository_edit_path(owner, repository)
       end
 
     end

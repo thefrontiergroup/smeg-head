@@ -5,7 +5,7 @@ Given /^I am editing the current repository$/ do
 end
 
 Then /^I should be editing the current repository$/ do
-  Then %{I should be on the page for the "#{@repository.clone_path}" repository}
+  Then %{I should be on the edit page for the "#{@repository.clone_path}" repository}
 end
 
 Then /^the current repository should no longer exist$/ do

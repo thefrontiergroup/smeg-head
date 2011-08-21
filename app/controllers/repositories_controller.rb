@@ -13,7 +13,7 @@ class RepositoriesController < ApplicationController
   def update
     authorize! :update, repository
     if repository.update_attributes params[:repository]
-      redirect_to contextual_repo_path(owner, repository, :root)
+      redirect_to contextual_repo_path(owner, repository, :edit)
     else
       render :action => :edit
     end

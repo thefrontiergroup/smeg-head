@@ -62,7 +62,12 @@ Then /^the current ([^"]*)'s ([^"]*) should be "([^"]*)"$/ do |name, field, valu
 end
 
 Then /^I should see (\d+) (.*)?$/ do |count, name|
-  page.should have_css selector_for(name), :count => count.to_i
+  count = count.to_i
+  if count == 0
+    page.should_not have_css selector_for(name)
+  else
+    page.should have_css selector_for(name), :count => count
+  end
 end
 
 Then /^I should (not )?see a (.*) with the id "([^"]*)"$/ do |negative, selector, value|
@@ -84,11 +89,9 @@ Then /^I should (not )?see a (.*) with the class "([^"]*)"$/ do |negative, selec
 end
 
 Then /^I should (not )?see a (.*) with the (.*) "([^"]*)"$/ do |negative, selector, field, value|
-  with_scope selector_for(selector) do
-    if negative
-      page.should_not have_content value
-    else
-      page.should have_content value
-    end
-  end
+  matching = page.all selector_for(selector)
+  matching.any? do |content|
+    matches = content.has_content?(value)
+    negative ? !matches : matches
+  end.should be_true
 end

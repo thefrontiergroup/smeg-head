@@ -56,7 +56,8 @@ Feature: User Repository Management
     
   
   Scenario: Adding a collaborator to a repository
-    Given I am a new, authenticated user with the user name "sutto"
+    Given there is a user with the user name "sj26"
+    And I am a new, authenticated user with the user name "sutto"
     And I have a repository with the name "Test Repository"
     And I am editing the current repository
     When I fill in "Collaborator Name" with "sj26"
@@ -72,8 +73,8 @@ Feature: User Repository Management
     And I am editing the current repository
     When I fill in "Collaborator Name" with "non-existant-user"
     And I press "Add" within the collaborator form
-    Then I should be on the current repositories create page
-    And I should see errors on the collaborator user user name
+    Then I should be on the create collaborator page for the current repository
+    And I should see errors on the collaboration user name
     
   
   Scenario: Removing a collaborator from a repository
@@ -83,6 +84,6 @@ Feature: User Repository Management
       | user_name |
       | sj26      |
     And I am editing the current repository
-    When I click "Remove" within the collaborator "sj26"
+    When I press "Remove" within the collaborator "sj26"
     Then I should be editing the current repository
-    And I should not see a collaborator with the user name "sj26"
+    And I should see 0 collaborators

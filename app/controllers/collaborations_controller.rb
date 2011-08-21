@@ -6,18 +6,18 @@ class CollaborationsController < ApplicationController
   before_filter :check_repository_authorization!
   
   inherit_resources
-  authorize_resource :collaboration
+  load_and_authorize_resource :collaboration
   
   actions :create, :destroy
   
   def create
-    create!(:notice => "Collaborator successfuly added.") do
+    create!(:notice => "Collaborator successfully added.") do
       contextual_repo_path(owner, repository, :edit) if resource.persisted?
     end
   end
   
   def destroy
-    destroy!(:notice => "Collaborator successfuly remove.") do
+    destroy!(:notice => "Collaborator successfully remove.") do
       contextual_repo_path(owner, repository, :edit)
     end
   end
