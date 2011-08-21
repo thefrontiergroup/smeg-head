@@ -6,7 +6,9 @@ describe User do
     it { should have_many :repositories, :as => :owner }
     it { should have_many :group_memberships }
     it { should have_many :groups, :through => :group_memberships }
-    it { should have_many :ssh_public_keys, :as => :owner }
+    it { should have_many :ssh_public_keys, :as => :owner, :dependent => :destroy }
+    it { should have_many :collaborations, :dependent => :destroy }
+    it { should have_many :collaborated_repositories, :through => :collaborations, :source => :repository }
   end
 
   context 'validations' do

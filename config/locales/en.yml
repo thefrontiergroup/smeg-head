@@ -9,3 +9,4 @@ en:
         can_not_be_changed: 'can not be changed'
         invalid_key_algorithm: 'contains an invalid key algorithm (must be ssh-rsa or ssh-dss)'
         does_not_look_like_a_key: 'does not look like a valid ssh key'
+        unable_to_find_user: 'is not a registered user name'

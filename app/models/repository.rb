@@ -1,10 +1,13 @@
 require 'repository_manager'
-require 'ostruct'
 class Repository < ActiveRecord::Base
 
   belongs_to :owner, :polymorphic => true
 
+  has_many :collaborations, :dependent => :destroy
+  has_many :collaborators, :through => :collaborations, :source => :user
+
   validates :name, :owner, :presence => true
+  validates :publically_accessible, :inclusion => {:in => [true, false]}
 
   is_sluggable :name
 
@@ -13,6 +16,10 @@ class Repository < ActiveRecord::Base
 
   after_create  :create_repository
   after_destroy :cleanup_repository
+
+  attr_accessible :name, :description, :publically_accessible
+
+  scope :publically_accessible, where(:publically_accessible => true)
 
   # Normalises a path, expanding .. in the path and removing
   # a trailing .git suffix. Will also remove multiple slashes from
@@ -96,35 +103,56 @@ class Repository < ActiveRecord::Base
   # @return [Boolean] true iff the user can perform the requested ref change.
   def allow_ref_change?(user, ref_change)
     # TODO: Implement ACL-based security checks here.
-    writeable_by? OpenStruct.new(:owner => user)
+    writeable_by? user
   end
 
-  # Checks if the given ssh public key can read this repository. Namely,
-  # this involves a short cut check to see if the user is a valid person of
-  # interest (that is, they have access to the current repository) or
-  # the given key is a deploy key for this repository.
-  # @param [SshPublicKey] ssh_public_key the key to check read permissions for
-  # @return [true, false] whether or not the specified key can read this repository.
-  def readable_by?(ssh_public_key)
-    owner = ssh_public_key.owner
-    case owner
-    when User
-      owner.ability.can? :read, self
+  # Checks if the given user is present in the collaborators collection of this object.
+  # @param [User] user the user to check
+  # @return [true,false] whether or not the given user is a collaborator.
+  def collaborator?(user)
+    if collaborators.loaded?
+      collaborators.include?(user)
     else
-      false
+      collaborators.where(:id => user.id).exists?
     end
   end
 
-  # Checks whether the given ssh public key has write access to this repository.
+  # Checks if the given user is a member for this repository.
+  # @param [User] user the user to check
+  # @return [true,false] whether or not the given user is a member.
+  def member?(user)
+    user == owner or collaborator?(user)
+  end
+
+  # Checks if the given user is an administrator for this repository.
+  # @param [User] user the user to check
+  # @return [true,false] whether or not the given user is an administrator.
+  def administrator?(user)
+    user == owner
+  end
+
+  # Checks if the given ssh public key or user can read this repository. Namely,
+  # this involves a short cut check to see if the user is a valid person of
+  # interest (that is, they have access to the current repository) or
+  # the given key is a deploy key for this repository.
+  # @param [SshPublicKey,User,Repository] target the target object to check permissions for.
+  # @return [true, false] whether or not the specified key can read this repository.
+  def readable_by?(target)
+    case target
+    when User         then target.ability.can? :show, self
+    when SshPublicKey then readable_by? target.owner
+    else false
+    end
+  end
+
+  # Checks whether the given target object has write access to this repository.
   # Typically, this basically checks it is a user associated (versus a deploy key)
   # and that said user can
-  def writeable_by?(ssh_public_key)
-    owner = ssh_public_key.owner
-    case owner
-    when User
-      owner.ability.can? :update, self
-    else
-      false
+  def writeable_by?(target)
+    case target
+    when User         then member? target
+    when SshPublicKey then writeable_by? target.owner
+    else false
     end
   end
 

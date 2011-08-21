@@ -10,7 +10,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110625075152) do
+ActiveRecord::Schema.define(:version => 20110705101654) do
+
+  create_table "collaborations", :force => true do |t|
+    t.integer  "repository_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "collaborations", ["repository_id", "user_id"], :name => "index_collaborations_on_repository_id_and_user_id"
 
   create_table "group_memberships", :force => true do |t|
     t.integer  "group_id"
@@ -31,15 +40,16 @@ ActiveRecord::Schema.define(:version => 20110625075152) do
   add_index "groups", ["cached_slug"], :name => "index_groups_on_cached_slug"
 
   create_table "repositories", :force => true do |t|
-    t.string   "name",        :null => false
+    t.string   "name",                                    :null => false
     t.text     "description"
-    t.string   "identifier",  :null => false
-    t.string   "cached_slug", :null => false
+    t.string   "identifier",                              :null => false
+    t.string   "cached_slug",                             :null => false
     t.integer  "owner_id"
     t.string   "owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "clone_path"
+    t.boolean  "publically_accessible", :default => true
   end
 
   add_index "repositories", ["clone_path"], :name => "index_repositories_on_clone_path"

@@ -5,7 +5,7 @@ Given /^I have (.+?) with the ([^\"]*) "([^\"]*)"$/ do |name, field, value|
   if object.respond_to? :user=
     object.user = @user
   elsif object.respond_to? :owner=
-    object.owner= @user
+    object.owner = @user
   end
   object.save!
   store_as_variable! name, object
@@ -55,8 +55,43 @@ Then /^the current ([^"]*)'s ([^"]*) should be "([^"]*)"$/ do |name, field, valu
   if object
     object.reload # Ensure it's a fresh instance.
   else
-     object = recognize_model(name).last
+    object = recognize_model(name).last
   end
   object.should be_present
   object.send(recognize_attribute_name(field)).to_s.should == value
+end
+
+Then /^I should see (\d+) (.*)?$/ do |count, name|
+  count = count.to_i
+  if count == 0
+    page.should_not have_css selector_for(name)
+  else
+    page.should have_css selector_for(name), :count => count
+  end
+end
+
+Then /^I should (not )?see a (.*) with the id "([^"]*)"$/ do |negative, selector, value|
+  selector = "#{selector_for(selector)}##{value}"
+  if negative
+    page.should_not have_css selector
+  else
+    page.should have_css selector
+  end
+end
+
+Then /^I should (not )?see a (.*) with the class "([^"]*)"$/ do |negative, selector, value|
+  selector = "#{selector_for(selector)}.#{value}"
+  if negative
+    page.should_not have_css selector
+  else
+    page.should have_css selector
+  end
+end
+
+Then /^I should (not )?see a (.*) with the (.*) "([^"]*)"$/ do |negative, selector, field, value|
+  matching = page.all selector_for(selector)
+  matching.any? do |content|
+    matches = content.has_content?(value)
+    negative ? !matches : matches
+  end.should be_true
 end

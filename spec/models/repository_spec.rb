@@ -4,41 +4,87 @@ describe Repository do
 
   context "associations" do
     it { should belong_to :owner, :polymorphic => true }
+    it { should have_many :collaborations, :dependent => :destroy }
+    it { should have_many :collaborators, :through => :collaborations, :source => :user }
   end
 
   context "validations" do
     it { should validate_presence_of :name, :owner }
+    it { should validate_inclusion_of :publically_accessible, :in => [true, false] }
   end
 
   context 'permissions' do
 
     let(:user_one)   { User.make! }
     let(:user_two)   { User.make! }
+    let(:user_three) { User.make! }
     let(:repository) { Repository.make! :owner => user_one }
+
+    before :each do
+      stub(repository).administrator?(user_one)   { true }
+      stub(repository).administrator?(user_two)   { false }
+      stub(repository).administrator?(user_three) { false }
+      stub(repository).member?(user_one)          { true }
+      stub(repository).member?(user_two)          { true }
+      stub(repository).member?(user_three)        { false }
+    end
 
     it 'should allow anyone to create a repository' do
       user_one.should be_able_to :create, Repository
       user_two.should be_able_to :create, Repository
+      user_three.should be_able_to :create, Repository
     end
 
-    it 'should allow anyone to show a repository' do
-      user_one.should be_able_to :show, repository
-      user_two.should be_able_to :show, repository
+    it 'should only allow the administrators to update a repository' do
+      user_one.should       be_able_to :update, repository
+      user_two.should_not   be_able_to :update, repository
+      user_three.should_not be_able_to :update, repository
     end
 
-    it 'should allow anyone to index a repository' do
-      user_one.should be_able_to :index, repository
-      user_two.should be_able_to :index, repository
+    it 'should only allow administrators to destroy a repository' do
+      user_one.should       be_able_to :destroy, repository
+      user_two.should_not   be_able_to :destroy, repository
+      user_three.should_not be_able_to :destroy, repository
     end
 
-    it 'should only allow the owner to update a repository' do
-      user_one.should     be_able_to :update, repository
-      user_two.should_not be_able_to :update, repository
+    describe 'public repositories' do
+
+      before :each do
+        repository.update_attribute :publically_accessible, true
+      end
+
+      it 'should allow anyone to show a repository' do
+        user_one.should   be_able_to :show, repository
+        user_two.should   be_able_to :show, repository
+        user_three.should be_able_to :show, repository
+      end
+
+      it 'should allow anyone to index a repository' do
+        user_one.should   be_able_to :index, repository
+        user_two.should   be_able_to :index, repository
+        user_three.should be_able_to :index, repository
+      end
+
     end
 
-    it 'should only allow the owner to destroy a repository' do
-      user_one.should     be_able_to :destroy, repository
-      user_two.should_not be_able_to :destroy, repository
+    describe 'private repositories' do
+
+      before :each do
+        repository.update_attribute :publically_accessible, false
+      end
+
+      it 'should allow members to show a repository' do
+        user_one.should       be_able_to :show, repository
+        user_two.should       be_able_to :show, repository
+        user_three.should_not be_able_to :show, repository
+      end
+
+      it 'should allow members to index the repository' do
+        user_one.should       be_able_to :index, repository
+        user_two.should       be_able_to :index, repository
+        user_three.should_not be_able_to :index, repository
+      end
+
     end
 
   end
@@ -163,15 +209,22 @@ describe Repository do
       describe 'readable by' do
 
         it 'should use the ability check when logged as a user' do
-          mock(ability).can?(:read, repository) { true }
+          mock(ability).can?(:show, repository) { true }
           repository.readable_by?(public_key)
         end
 
         it 'should return the correct value dependent on the ability' do
-          stub(ability).can?(:read, repository) { true }
-          stub(other_ability).can?(:read, repository) { false }
+          stub(ability).can?(:show, repository) { true }
+          stub(other_ability).can?(:show, repository) { false }
           repository.should be_readable_by public_key
           repository.should_not be_readable_by other_public_key
+          repository.should be_readable_by user
+          repository.should_not be_readable_by other_user
+        end
+        
+        it 'should be false for anything else' do
+          repository.should_not be_readable_by nil
+          repository.should_not be_readable_by 'some string'
         end
 
       end
@@ -179,19 +232,56 @@ describe Repository do
       describe 'writeable by' do
 
         it 'should use the ability check when logged as a user' do
-          mock(ability).can?(:update, repository) { true }
+          mock(repository).member?(user).times(2)
           repository.writeable_by?(public_key)
+          repository.writeable_by?(user)
         end
 
-        it 'should return the correct value dependent on the ability' do
-          stub(ability).can?(:update, repository) { true }
-          stub(other_ability).can?(:update, repository) { false }
-          repository.should be_writeable_by public_key
+        it 'should only allow members to write to a repository' do
+          stub(repository).member?(user)       { true }
+          stub(repository).member?(other_user) { false }
+          # Actual permissions checks
+          repository.should     be_writeable_by public_key
           repository.should_not be_writeable_by other_public_key
+          repository.should     be_writeable_by user
+          repository.should_not be_writeable_by other_user
+        end
+        
+        it 'should be false for anything else' do
+          repository.should_not be_writeable_by nil
+          repository.should_not be_writeable_by 'some string'
         end
 
       end
 
+    end
+
+  end
+
+  describe 'checking collaborators' do
+
+    let!(:user_one)   { User.make! }
+    let!(:user_two)   { User.make! }
+    let!(:repository) { Repository.make! }
+
+    before :each do
+      repository.collaborators << user_one
+    end
+
+    it "should not load the collection if it isn't already loaded" do
+      repository.reload
+      repository.collaborators.loaded?.should be_false
+      repository.should be_collaborator user_one
+      repository.should_not be_collaborator user_two
+      repository.collaborators.loaded?.should be_false
+    end
+
+    it "should use the loaded collection if possible" do
+      repository.reload
+      repository.collaborators true # Force it to be loaded
+      repository.collaborators.loaded?.should be_true
+      repository.should be_collaborator user_one
+      repository.should_not be_collaborator user_two
     end
 
   end

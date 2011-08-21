@@ -1,0 +1,5 @@
+= form.inputs :collaborator_details do
+  = form.input :user_name, :label => 'Collaborator Name'
+
+= form.buttons do
+  = form.commit_button(form.object.new_record? ? 'Add Collaborator' : 'Update Collaborator')

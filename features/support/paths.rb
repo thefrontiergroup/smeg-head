@@ -1,4 +1,14 @@
 module NavigationHelpers
+  
+  def normalize_repository_path_component(component)
+    page_name = (component.strip.presence || "root").tr ' ', '_'
+    case page_name
+    when "create_collaborator" then "collaborations"
+    else
+      page_name
+    end
+  end
+  
   # Maps a name to a path. Used by the
   #
   #   When /^I go to (.+)$/ do |page_name|
@@ -23,10 +33,13 @@ module NavigationHelpers
       new_users_repository_path
     when /the create user repository page/
       users_repositories_path
-    when /the page for the "([^\"]*)" repository/
-      repository = Repository.from_path($1)
+    when /the (.*)page for the current repository/
+      path_to "the #{$1}page for the \"#{@repository.clone_path}\" repository"
+    when /the (.*)page for the "([^\"]*)" repository/
+      repository = Repository.from_path($2)
+      page_name  = normalize_repository_path_component($1)
       case repository.owner
-      when User then user_repository_root_path(:user_id => repository.owner.to_param, :repository_id => repository.to_param)
+      when User then send(:"user_repository_#{page_name}_path", :user_id => repository.owner.to_param, :repository_id => repository.to_param)
       end
     else
       begin

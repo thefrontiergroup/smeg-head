@@ -9,15 +9,21 @@ class Ability
 
     # Repository Permissions
     can(:create,  Repository) # All users can create repositories
-    can(:read,    Repository) # At the moment, all users can read repositories.
-    can(:update,  Repository) { |r| owns? r }
-    can(:destroy, Repository) { |r| owns? r }
+    can(:update,  Repository) { |r| r.administrator? user }
+    can(:destroy, Repository) { |r| r.administrator? user }
+    can(:read,    Repository) { |r| r.publically_accessible? or r.member?(user) }
 
     # SSH Key Permissions
     can(:create,  SshPublicKey)
     can(:read,    SshPublicKey) { |r| owns? r }
     can(:update,  SshPublicKey) { |r| owns? r }
     can(:destroy, SshPublicKey) { |r| owns? r }
+    
+    # Collaboration Permissions
+    can(:create,  Collaboration) { |c| owns? c.repository }
+    can(:read,    Collaboration) { |c| c.user == user or owns? c.repository }
+    can(:update,  Collaboration) { |c| owns? c.repository }
+    can(:destroy, Collaboration) { |c| c.user == user or owns? c.repository }
 
     # Permissions on oneself
     can :read,            User
