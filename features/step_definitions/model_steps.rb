@@ -5,7 +5,7 @@ Given /^I have (.+?) with the ([^\"]*) "([^\"]*)"$/ do |name, field, value|
   if object.respond_to? :user=
     object.user = @user
   elsif object.respond_to? :owner=
-    object.owner= @user
+    object.owner = @user
   end
   object.save!
   store_as_variable! name, object

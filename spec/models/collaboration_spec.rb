@@ -14,6 +14,30 @@ describe Collaboration do
     it { should validate_presence_of :user }
     it { should validate_presence_of :repository  }
     it { should validate_uniqueness_of :user_id, :scope => :repository_id }
+    
+    context 'user name validation' do
+    
+      subject { Collaboration.last }
+    
+      it 'should not add an error to the user name field when assigning directly' do
+        user = subject.user
+        subject.should be_valid
+        subject.user = nil
+        subject.should_not be_valid
+        subject.should_not have(:any).errors_on(:user_name)
+      end
+    
+      it 'should add an error to the user name field if the user is unknown and assigned via user name' do
+        user = subject.user
+        subject.user_name = 'Some Fake Test Name'
+        subject.should_not be_valid
+        subject.should have(1).errors_on(:user_name)
+        subject.user_name = user.user_name
+        subject.should be_valid
+      end
+    
+    end
+    
   end
   
   describe 'setting based on the user name' do
@@ -42,6 +66,12 @@ describe Collaboration do
       collaboration.user.should be_nil
       collaboration.user_name = ''
       collaboration.user.should be_nil
+    end
+    
+    it 'should store the user name on invalid assignments' do
+      collaboration.user_name = 'some-invalid-user-name'
+      collaboration.user_name.should == 'some-invalid-user-name'
+      collaboration.user.should be_blank
     end
     
   end
