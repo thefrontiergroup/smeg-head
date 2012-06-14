@@ -5,7 +5,7 @@ class SshPublicKeyManager
   include SmegHead::Commandable
 
   cattr_accessor :authorized_keys_path
-  self.authorized_keys_path ||= '~/.ssh/authorized_keys'
+  self.authorized_keys_path ||= "~#{Settings.smeg_head.fetch(:user, 'git')}/.ssh/authorized_keys"
 
   DEFAULT_OPTIONS = {:port_forwarding => false, :X11_forwarding => false, :agent_forwarding => false}
 
