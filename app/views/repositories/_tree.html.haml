@@ -1,0 +1,2 @@
+- path = current_path.join('/') + "/#{tree.name}"
+%li= link_to tree.name, user_repository_tree_child_url(@owner, @repository, @current_ref, path)

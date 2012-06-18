@@ -1,0 +1,2 @@
+- path = current_path.join('/') + "/#{blob.name}"
+%li= link_to blob.name, user_repository_blob_url(@owner, @repository, @current_ref, path)

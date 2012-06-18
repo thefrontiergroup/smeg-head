@@ -1,0 +1,13 @@
+- if @tree.contents.count == 0
+  Nothing in the repo
+%div
+  = link_to @repository.to_ssh_url, 'ssh://'+@repository.to_ssh_url
+%ol
+  - @tree.contents.each do |content|
+    - case content.class.name
+    - when 'Grit::Blob'
+      = render 'blob', blob: content
+    - when 'Grit::Tree'
+      = render 'tree', tree: content
+    - else
+      = render template: 'inspect', content: content
