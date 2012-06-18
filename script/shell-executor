@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+export PATH ; PATH="/Users/ruxton/.rvm/gems/ruby-1.9.3-p0@smeghead/bin:/Users/ruxton/.rvm/gems/ruby-1.9.3-p0@global/bin:/Users/ruxton/.rvm/rubies/ruby-1.9.3-p0/bin:/Users/ruxton/.rvm/bin:$PATH"
+export rvm_env_string ; rvm_env_string='ruby-1.9.3-p0@smeghead'
+export rvm_path ; rvm_path='/Users/ruxton/.rvm'
+export rvm_ruby_string ; rvm_ruby_string='ruby-1.9.3-p0'
+export rvm_gemset_name ; rvm_gemset_name='smeghead'
+export RUBY_VERSION ; RUBY_VERSION='ruby-1.9.3-p0'
+export GEM_HOME ; GEM_HOME='/Users/ruxton/.rvm/gems/ruby-1.9.3-p0@smeghead'
+export GEM_PATH ; GEM_PATH='/Users/ruxton/.rvm/gems/ruby-1.9.3-p0@smeghead:/Users/ruxton/.rvm/gems/ruby-1.9.3-p0@global'
+export MY_RUBY_HOME ; MY_RUBY_HOME='/Users/ruxton/.rvm/rubies/ruby-1.9.3-p0'
+export IRBRC ; IRBRC='/Users/ruxton/.rvm/rubies/ruby-1.9.3-p0/.irbrc'
+unset MAGLEV_HOME
+unset RBXOPT
+
+$0/../smeg-head-shell $@

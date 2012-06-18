@@ -34,7 +34,7 @@ class SshPublicKeyManager
   end
 
   def shell_command_for_key
-    default_shell = "#{Rails.root.join('script', 'smeg-head-shell')} %s"
+    default_shell = "#{Rails.root.join('script', 'shell-executor')} %s"
     current_shell = Settings.smeg_head.fetch(:shell_wrapper, default_shell)
     command_value = current_shell % key.id.to_s
     {:command => command_value}
