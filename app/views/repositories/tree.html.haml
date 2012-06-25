@@ -1,7 +1,13 @@
 - if @tree.contents.count == 0
   Nothing in the repo
 %div
+  SSH URL:
   = link_to @repository.to_ssh_url, 'ssh://'+@repository.to_ssh_url
+%h3 Branches
+%ul.branches
+  - @repository.to_grit.branches.each do |branch|
+    %li= link_to branch.name, user_repository_tree_root_path(@repository.owner, @repository, branch.name)
+%h3 Tree
 %ol
   - @tree.contents.each do |content|
     - case content.class.name
