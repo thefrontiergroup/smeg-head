@@ -1,4 +1,4 @@
-class RepositoriesController < ApplicationController  
+class RepositoriesController < ApplicationController
   require 'repository_loader'
   include RepositoryLoader
 
@@ -32,12 +32,16 @@ class RepositoriesController < ApplicationController
   end
 
   def tree
-    @tree = extract_relevant_tree repository.to_grit.tree(current_ref)
+    begin
+      @tree,@path = extract_relevant_tree current_ref
+    rescue
+      render 'no_ref'
+    end
   end
 
   def blob
-    @tree = extract_relevant_tree repository.to_grit.tree(current_ref), current_path[0..-2]
-    @blob = @tree / current_path.last
+    @tree = extract_relevant_tree current_ref, true
+    @blob = @tree / current_ref.split('/').reject { |v| v.blank? or %w(. ..).include?(v) }.last
     check_type! @blob, Grit::Blob
   end
 
@@ -54,17 +58,53 @@ class RepositoriesController < ApplicationController
     params[:path].blank? ? [] : params[:path].split("/").reject { |v| v.blank? or %w(. ..).include?(v) }
   end
 
-  def extract_relevant_tree(tree, path = current_path)
-    check_type! tree
-    path.each do |subpath|
-      tree = tree / subpath
-      check_type! tree
+  def extract_relevant_tree(tree, blob = false)
+    treearr = tree.split('/').reject { |v| v.blank? or %w(. ..).include?(v) }
+    treearr = treearr[0..-2] if blob
+
+    found = false
+    tree = repository.to_grit.tree
+    path = []
+
+    treearr.each_with_index do |subpath,i|
+      path << subpath
+      if i == 0
+        tree = tree / subpath
+      end
+
+      if !found
+        Rails.logger.debug("[#{i}] nil tree #{path.join('/')}")
+        tree = repository.to_grit.tree(path.join('/'))
+        Rails.logger.debug("[#{i}] tree set #{tree.inspect}")
+      else
+        Rails.logger.debug("[#{i}] else tree")
+        tree = tree / subpath
+      end
+
+      begin
+        Rails.logger.debug("[#{i}] check tree #{tree.inspect} and #{path}")
+        check_type! tree
+        found = true
+      rescue Error
+        Rails.logger.debug("[#{i}] rescued")
+        if (treearr.size-1) != i
+          Rails.logger.debug("[#{i}] next/nil set")
+          found = false
+          next
+        else
+          Rails.logger.debug("[#{i}] raise it")
+          raise "Uknown object #{path.join('/')}"
+        end
+      end
     end
     tree
   end
 
   def check_type!(entry, type = Grit::Tree)
-    raise Error, 'Unknown object' unless entry.presence.is_a?(type)
+    raise Error, "Unknown object #{entry}" unless entry.presence.is_a?(type)
+    if type == Grit::Tree
+      raise Error, "Unknown object #{entry}" if entry.contents.size == 0
+    end
   end
 
 end

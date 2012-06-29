@@ -11,10 +11,10 @@ SmegHead::Application.routes.draw do
           get    'edit',            :as => :edit,       :to => 'repositories#edit'
           get    'commits/:ref',    :as => :commits,    :to => 'repositories#commits'
           get    'commit/:ref',     :as => :commit,     :to => 'repositories#commit'
-          get    'tree/*ref',       :as => :tree_root,  :to => 'repositories#tree'
-          get    'tree/*ref/*path', :as => :tree_child, :to => 'repositories#tree'
-          get    'blob/*ref/*path', :as => :blob,       :to => 'repositories#blob'
-          get    'raw/*ref/*path',  :as => :raw,        :to => 'repositories#raw'
+          # get    'tree/*ref',       :as => :tree_root,  :to => 'repositories#tree'
+          get    'tree/:ref', :as => :tree_child, :to => 'repositories#tree', :constraints => { :ref => /.*/ }
+          get    'blob/:ref', :as => :blob,       :to => 'repositories#blob', :constraints => { :ref => /.*/ }
+          get    'raw/:ref',  :as => :raw,        :to => 'repositories#raw', :constraints => { :ref => /.*/ }
         end
       end
     end

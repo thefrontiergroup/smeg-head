@@ -1,2 +1,4 @@
-- path = current_path.join('/') + "#{tree.name}"
-%li= link_to tree.name, user_repository_tree_child_url(@owner, @repository, @current_ref, path)
+%tr
+  %td.name= link_to tree.name, user_repository_tree_child_url(@owner, @repository, @ref)
+  %td.age= time_ago_in_words @last_commit.date
+  %td.message= "(#{@last_commit.author.name}) #{@last_commit.message}"

@@ -1,2 +1,4 @@
-- path = current_path.join('/') + "#{blob.name}"
-%li= link_to blob.name, user_repository_blob_url(@owner, @repository, @current_ref, path)
+%tr
+  %td.name= link_to blob.name, user_repository_blob_url(@owner, @repository, @ref)
+  %td.age= time_ago_in_words @last_commit.date
+  %td.message= "(#{@last_commit.author.name}) #{@last_commit.message}"
