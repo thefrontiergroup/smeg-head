@@ -1,1 +1,9 @@
-%h1 Welcome to Smeg Head.
+%h1 Welcome to Smeg Head
+
+%h2
+  Public Repositories
+%ul#repositories
+  - if @repositories.empty?
+    %li.empty There are no public repositories available
+  - @repositories.each do |repository|
+    %li.repository= link_to repository.name, contextual_repo_path(repository.owner, repository, :root)
