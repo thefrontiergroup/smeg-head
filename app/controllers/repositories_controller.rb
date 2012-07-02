@@ -32,33 +32,43 @@ class RepositoriesController < ApplicationController
   end
 
   def tree
-    begin
-      @tree,@path = extract_relevant_tree current_ref
-    rescue
+    @tree = @branch = current_branch
+    if @tree
+      @tree = @branch/current_path.join('/') unless current_path.empty?
+    end
+
+    if !@tree
       render 'no_ref'
     end
+
   end
 
   def blob
-    @tree = extract_relevant_tree current_ref, true
-    @blob = @tree / current_ref.split('/').reject { |v| v.blank? or %w(. ..).include?(v) }.last
+    @branch = current_branch
+    if @branch
+      @blob = @branch/(current_path.join('/'))
+    end
     check_type! @blob, Grit::Blob
   end
 
   def raw
   end
 
-  private
+  def current_branch
+    @branch ||= extract_branch current_ref
+  end
 
   def current_ref
     @current_ref ||= (params[:ref] == :default ? repository.manager.head : params[:ref])
   end
 
   def current_path
-    params[:path].blank? ? [] : params[:path].split("/").reject { |v| v.blank? or %w(. ..).include?(v) }
+    @current_path ||= current_ref.gsub(/#{current_branch.id}[\/]?/,'').split('/')
   end
 
-  def extract_relevant_tree(tree, blob = false)
+  private
+
+  def extract_branch(tree, blob = false)
     treearr = tree.split('/').reject { |v| v.blank? or %w(. ..).include?(v) }
     treearr = treearr[0..-2] if blob
 
@@ -68,32 +78,21 @@ class RepositoriesController < ApplicationController
 
     treearr.each_with_index do |subpath,i|
       path << subpath
-      if i == 0
-        tree = tree / subpath
-      end
 
       if !found
-        Rails.logger.debug("[#{i}] nil tree #{path.join('/')}")
         tree = repository.to_grit.tree(path.join('/'))
-        Rails.logger.debug("[#{i}] tree set #{tree.inspect}")
-      else
-        Rails.logger.debug("[#{i}] else tree")
-        tree = tree / subpath
       end
 
       begin
-        Rails.logger.debug("[#{i}] check tree #{tree.inspect} and #{path}")
         check_type! tree
         found = true
+        break
       rescue Error
-        Rails.logger.debug("[#{i}] rescued")
         if (treearr.size-1) != i
-          Rails.logger.debug("[#{i}] next/nil set")
           found = false
           next
         else
-          Rails.logger.debug("[#{i}] raise it")
-          raise "Uknown object #{path.join('/')}"
+          tree = nil
         end
       end
     end

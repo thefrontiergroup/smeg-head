@@ -1,5 +1,3 @@
-- if @tree.contents.count == 0
-  Nothing in the repo
 %div
   SSH URL:
   = link_to @repository.to_ssh_url, 'ssh://'+@repository.to_ssh_url
@@ -15,8 +13,9 @@
       %th Message
   %tbody
     - @tree.contents.each do |content|
-      - @ref = @current_ref + "/#{content.name}"
-      - @last_commit = @repository.to_grit.log(@current_ref, content.name, max_count: 1, skip: 0).last
+      - @ref = controller.current_ref + "/#{content.name}"
+      - @path = controller.current_path + ["#{content.name}"]
+      - @last_commit = @repository.to_grit.log(controller.current_branch.id, @path.join('/'), max_count: 1, skip: 0).last
       - case content.class.name
       - when 'Grit::Blob'
         = render 'blob', blob: content
