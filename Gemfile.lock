@@ -5,6 +5,14 @@ GIT
     nestive (0.1.0)
       rails (~> 3.0)
 
+GIT
+  remote: https://github.com/sj26/rspec_tag_matchers
+  revision: 0423fe3ef9776b3e78bfabeb774c3c74f727def5
+  specs:
+    rspec_tag_matchers (1.0.0)
+      nokogiri (>= 1.4.0)
+      rspec-rails (>= 1.2.6)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -35,49 +43,53 @@ GEM
       activemodel (= 3.0.9)
       activesupport (= 3.0.9)
     activesupport (3.0.9)
+    addressable (2.2.8)
     angry_shell (0.0.2)
-    archive-tar-minitar (0.5.2)
     arel (2.0.10)
     bcrypt-ruby (3.0.1)
     blankslate (2.1.2.4)
     builder (2.1.2)
     cancan (1.6.5)
-    capybara (0.4.1.2)
-      celerity (>= 0.7.9)
-      culerity (>= 0.2.4)
+    capybara (1.1.2)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
-      selenium-webdriver (>= 0.0.27)
-      xpath (~> 0.1.3)
-    capybara-webkit (0.5.0)
-      capybara (~> 0.4.1)
-    celerity (0.8.9)
-    childprocess (0.1.9)
+      selenium-webdriver (~> 2.0)
+      xpath (~> 0.1.4)
+    capybara-webkit (0.12.1)
+      capybara (>= 1.0.0, < 1.2)
+      json
+    childprocess (0.3.3)
       ffi (~> 1.0.6)
-    columnize (0.3.3)
+    columnize (0.3.6)
     configuration (1.2.0)
-    cucumber (1.0.0)
+    cucumber (1.2.1)
       builder (>= 2.1.2)
-      diff-lcs (>= 1.1.2)
-      gherkin (~> 2.4.1)
+      diff-lcs (>= 1.1.3)
+      gherkin (~> 2.11.0)
       json (>= 1.4.6)
-      term-ansicolor (>= 1.0.5)
-    cucumber-rails (0.4.1)
-      cucumber (>= 0.10.1)
-      nokogiri (>= 1.4.4)
-      rack-test (>= 0.5.7)
-    culerity (0.2.15)
+    cucumber-rails (1.0.6)
+      capybara (>= 1.1.1)
+      cucumber (>= 1.0.6)
+      nokogiri (>= 1.5.0)
     database_cleaner (0.6.7)
+    debugger (1.1.4)
+      columnize (>= 0.3.1)
+      debugger-linecache (~> 1.1.1)
+      debugger-ruby_core_source (~> 1.1.3)
+    debugger-linecache (1.1.2)
+      debugger-ruby_core_source (>= 1.1.1)
+    debugger-ruby_core_source (1.1.3)
     devise (1.5.3)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.0.3)
       warden (~> 1.1)
-    diff-lcs (1.1.2)
+    diff-lcs (1.1.3)
+    dnssd (2.0)
     erubis (2.6.6)
       abstract (>= 1.0.0)
-    ffi (1.0.9)
+    ffi (1.0.11)
     forgery (0.3.10)
       nokogiri (~> 1.4)
     formtastic (1.2.4)
@@ -88,7 +100,7 @@ GEM
       rspec (~> 2.0)
       rspec-instafail (~> 0.1.4)
       ruby-progressbar (~> 0.0.10)
-    gherkin (2.4.1)
+    gherkin (2.11.1)
       json (>= 1.4.6)
     grit (2.4.1)
       diff-lcs (~> 1.1)
@@ -114,20 +126,16 @@ GEM
       haml (~> 3.0)
       railties (~> 3.0)
     has_scope (0.5.0)
-    headless (0.1.0)
     i18n (0.5.0)
     inherited_resources (1.2.2)
       has_scope (~> 0.5.0)
       responders (~> 0.6.0)
-    json (1.5.3)
-    json_pure (1.5.3)
+    json (1.7.3)
     launchy (0.3.7)
       configuration (>= 0.0.5)
       rake (>= 0.8.1)
-    linecache (0.46)
-      rbx-require-relative (> 0.0.4)
-    linecache19 (0.5.12)
-      ruby_core_source (>= 0.1.4)
+    libwebsocket (0.1.3)
+      addressable
     macaddr (1.0.0)
     machinist (2.0.0.beta2)
     mail (2.2.19)
@@ -135,9 +143,10 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    mime-types (1.16)
+    mime-types (1.19)
+    multi_json (1.3.6)
     navigasmic (0.5.5)
-    nokogiri (1.4.6)
+    nokogiri (1.5.5)
     orm_adapter (0.0.7)
     parslet (1.2.1)
       blankslate (~> 2.0)
@@ -162,18 +171,8 @@ GEM
       rdoc (~> 3.4)
       thor (~> 0.14.4)
     rake (0.9.2)
-    rbx-require-relative (0.0.5)
     rchardet (1.3)
     rdoc (3.6.1)
-    remarkable (4.0.0.alpha4)
-      rspec (>= 2.0.0.alpha11)
-    remarkable_activemodel (4.0.0.alpha4)
-      remarkable (~> 4.0.0.alpha4)
-      rspec (>= 2.0.0.alpha11)
-    remarkable_activerecord (4.0.0.alpha4)
-      remarkable (~> 4.0.0.alpha4)
-      remarkable_activemodel (~> 4.0.0.alpha4)
-      rspec (>= 2.0.0.alpha11)
     responders (0.6.4)
     rr (1.0.2)
     rspec (2.6.0)
@@ -190,31 +189,23 @@ GEM
       activesupport (~> 3.0)
       railties (~> 3.0)
       rspec (~> 2.6.0)
-    ruby-debug (0.10.4)
-      columnize (>= 0.1)
-      ruby-debug-base (~> 0.10.4.0)
-    ruby-debug-base (0.10.4)
-      linecache (>= 0.3)
-    ruby-debug-base19 (0.11.25)
-      columnize (>= 0.3.1)
-      linecache19 (>= 0.5.11)
-      ruby_core_source (>= 0.1.4)
-    ruby-debug19 (0.11.6)
-      columnize (>= 0.3.1)
-      linecache19 (>= 0.5.11)
-      ruby-debug-base19 (>= 0.11.19)
+    rspec_junit_formatter (0.1.1)
+      builder
+      rspec (~> 2.0)
     ruby-progressbar (0.0.10)
-    ruby_core_source (0.1.5)
-      archive-tar-minitar (>= 0.5.2)
-    rubyzip (0.9.4)
-    selenium-webdriver (0.2.2)
-      childprocess (>= 0.1.9)
-      ffi (>= 1.0.7)
-      json_pure
+    rubyzip (0.9.9)
+    selenium-webdriver (2.24.0)
+      childprocess (>= 0.2.5)
+      libwebsocket (~> 0.1.3)
+      multi_json (~> 1.0)
       rubyzip
+    shoulda-matchers (1.2.0)
+      activesupport (>= 3.0.0)
     simplecov (0.4.2)
       simplecov-html (~> 0.4.4)
     simplecov-html (0.4.5)
+    simplecov-rcov (0.2.3)
+      simplecov (>= 0.4.1)
     slugged (0.4.0)
       activerecord (~> 3.0.0)
       activesupport (~> 3.0.0)
@@ -225,7 +216,6 @@ GEM
     sshkey (1.2.2)
     stringex (1.2.1)
     syntax (1.0.0)
-    term-ansicolor (1.0.5)
     thor (0.14.6)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
@@ -250,11 +240,13 @@ PLATFORMS
 DEPENDENCIES
   angry_shell
   cancan
-  capybara
+  capybara (~> 1.1.1)
   capybara-webkit
-  cucumber-rails
+  cucumber-rails (~> 1.0.6)
   database_cleaner
+  debugger
   devise
+  dnssd
   forgery
   formtastic (~> 1.2)
   fuubar
@@ -266,22 +258,20 @@ DEPENDENCIES
   guard-pow
   guard-rspec
   haml-rails
-  headless (~> 0.1.0)
   inherited_resources
   launchy
   machinist (>= 2.0.0.beta2)
   navigasmic
   nestive!
   parslet
-  rails (= 3.0.9)
-  remarkable (>= 4.0.0.alpha4)
-  remarkable_activerecord (>= 4.0.0.alpha4)
+  rails (~> 3.0.9)
   rr
-  rspec (~> 2.1)
-  rspec-rails (~> 2.1)
-  ruby-debug
-  ruby-debug19
+  rspec-rails
+  rspec_junit_formatter
+  rspec_tag_matchers!
+  shoulda-matchers
   simplecov
+  simplecov-rcov
   slugged
   sqlite3-ruby
   sshkey
