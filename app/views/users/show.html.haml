@@ -1,0 +1,19 @@
+%h1= @user.user_name
+= image_tag @user.gravatar_url
+
+%h2 Stats
+%dl
+  %dt # of Repos
+  %dd= @repositories.count
+
+  %dt Signed Up
+  %dd= @user.created_at
+
+%h3 Repositories
+- if @user = current_user
+  = link_to t('.new'), new_users_repository_path
+%ul
+  - if @repositories.empty?
+    %li.empty There are no public repositories available
+  - @repositories.each do |repository|
+    %li.repository= link_to repository.name, contextual_repo_path(repository.owner, repository, :root)
