@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SshPublicKey do
 
   context 'associations' do
-    it { should belong_to :owner, :polymorphic => true }
+    it { should belong_to :owner }
   end
 
   context 'validations' do
@@ -15,12 +15,12 @@ describe SshPublicKey do
     it { should validate_presence_of   :owner }
     it { should validate_presence_of   :key }
     it { should validate_presence_of   :fingerprint }
-    it { should validate_uniqueness_of :name, :scope => [:owner_type, :owner_id] }
+    it { should validate_uniqueness_of :name  }
     it { should validate_uniqueness_of :key }
     it { should validate_uniqueness_of :fingerprint }
 
-    it { should     allow_values_for :key, *ExampleKeys.known_good_keys }
-    it { should_not allow_values_for :key, *ExampleKeys.known_bad_keys  }
+    it { should     allow_value(*ExampleKeys.known_good_keys.first).for(:key) }
+    it { should_not allow_value(*ExampleKeys.known_bad_keys.first).for(:key) }
 
   end
 

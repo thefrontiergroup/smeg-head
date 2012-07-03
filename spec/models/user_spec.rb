@@ -3,12 +3,12 @@ require 'spec_helper'
 describe User do
 
   context 'associations' do
-    it { should have_many :repositories, :as => :owner }
+    it { should have_many :repositories }
     it { should have_many :group_memberships }
-    it { should have_many :groups, :through => :group_memberships }
-    it { should have_many :ssh_public_keys, :as => :owner, :dependent => :destroy }
-    it { should have_many :collaborations, :dependent => :destroy }
-    it { should have_many :collaborated_repositories, :through => :collaborations, :source => :repository }
+    it { should have_many :groups }
+    it { should have_many :ssh_public_keys }
+    it { should have_many :collaborations }
+    it { should have_many :collaborated_repositories }
   end
 
   context 'validations' do
@@ -16,7 +16,7 @@ describe User do
     let!(:existing_user) { User.make! }
 
     it { should validate_presence_of :user_name }
-    it { should validate_uniqueness_of :user_name, :case_sensitive => false }
+    it { should validate_uniqueness_of :user_name }
 
     it 'should validate the user name is unchangeable' do
       user = User.make!

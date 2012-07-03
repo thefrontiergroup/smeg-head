@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Group do
 
   context 'associations' do
-    it { should have_many :memberships, :class_name => 'GroupMembership' }
-    it { should have_many :users, :through => :memberships }
+    it { should have_many :memberships }
+    it { should have_many :users }
   end
 
   context 'validations' do

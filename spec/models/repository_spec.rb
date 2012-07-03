@@ -3,14 +3,15 @@ require "spec_helper"
 describe Repository do
 
   context "associations" do
-    it { should belong_to :owner, :polymorphic => true }
-    it { should have_many :collaborations, :dependent => :destroy }
-    it { should have_many :collaborators, :through => :collaborations, :source => :user }
+    it { should belong_to :owner }
+    it { should have_many :collaborations }
+    it { should have_many :collaborators }
   end
 
   context "validations" do
-    it { should validate_presence_of :name, :owner }
-    it { should validate_inclusion_of :publically_accessible, :in => [true, false] }
+    it { should validate_presence_of :name }
+    it { should validate_presence_of :owner }
+    it { should ensure_inclusion_of(:publically_accessible).in_array([true, false]) }
   end
 
   context 'permissions' do
@@ -221,7 +222,7 @@ describe Repository do
           repository.should be_readable_by user
           repository.should_not be_readable_by other_user
         end
-        
+
         it 'should be false for anything else' do
           repository.should_not be_readable_by nil
           repository.should_not be_readable_by 'some string'
@@ -246,7 +247,7 @@ describe Repository do
           repository.should     be_writeable_by user
           repository.should_not be_writeable_by other_user
         end
-        
+
         it 'should be false for anything else' do
           repository.should_not be_writeable_by nil
           repository.should_not be_writeable_by 'some string'
