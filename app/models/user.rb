@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  include Gravatarable
+
   devise :database_authenticatable, :registerable, :token_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable
 

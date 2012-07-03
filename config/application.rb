@@ -11,7 +11,6 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 module SmegHead
   class Application < Rails::Application
-    # config.autoload_paths                              += %W(#{config.root}/extras)
     # config.plugins                                      = [ :exception_notification, :ssl_requirement, :all ]
     # config.active_record.observers                      = :cacher, :garbage_collector, :forum_observer
     # config.time_zone                                    = 'Central Time (US & Canada)'
@@ -24,6 +23,7 @@ module SmegHead
 
     # Make sure we load smeg_head as early as possible.
     config.before_initialize { require 'smeg_head/all' }
+    config.autoload_paths << "#{config.root}/app/concerns"
 
   end
 end
