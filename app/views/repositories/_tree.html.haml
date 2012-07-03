@@ -1,4 +1,7 @@
 %tr
   %td.name= link_to tree.name, user_repository_tree_child_url(@owner, @repository, @ref)
   %td.age= time_ago_in_words @last_commit.date
-  %td.message= "(#{@last_commit.author.name}) #{@last_commit.message}"
+  - if @user
+    %td.message= "(#{link_to @user.user_name, @user}) #{@last_commit.message}".html_safe
+  - else
+    %td.message= "(#{@last_commit.author.name}) #{@last_commit.message}"
