@@ -37,7 +37,6 @@ class RepositoriesController < ApplicationController
     if @tree
       @tree = @branch/current_path.join('/') unless current_path.empty?
     end
-
     if !@tree
       render 'no_ref'
     end

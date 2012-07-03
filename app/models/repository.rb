@@ -17,7 +17,7 @@ class Repository < ActiveRecord::Base
   after_create  :create_repository
   after_destroy :cleanup_repository
 
-  attr_accessible :name, :description, :publically_accessible
+  attr_accessible :name, :description, :publically_accessible, :default_branch
 
   scope :publically_accessible, where(:publically_accessible => true)
 
@@ -104,6 +104,14 @@ class Repository < ActiveRecord::Base
   def allow_ref_change?(user, ref_change)
     # TODO: Implement ACL-based security checks here.
     writeable_by? user
+  end
+
+  def default_branch=(ref)
+    manager.update_head(ref)
+  end
+
+  def default_branch
+    manager.head
   end
 
   # Checks if the given user is present in the collaborators collection of this object.
