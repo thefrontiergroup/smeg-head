@@ -1,6 +1,10 @@
-%div
-  SSH URL:
-  = link_to @repository.to_ssh_url, 'ssh://'+@repository.to_ssh_url
+%h3 Meta
+%ul
+  %li
+    SSH URL:
+    = link_to @repository.to_ssh_url, 'ssh://'+@repository.to_ssh_url
+  - if @repository.administrator?(current_user)
+    %li.edit= link_to t('.edit'), user_repository_edit_path(@repository.owner, @repository)
 
 = render 'branches'
 
@@ -16,6 +20,7 @@
       - @ref = controller.current_ref + "/#{content.name}"
       - @path = controller.current_path + ["#{content.name}"]
       - @last_commit = @repository.to_grit.log(controller.current_branch.id, @path.join('/'), max_count: 1, skip: 0).last
+      - @user = User.where( email: @last_commit.author.email ).first if @last_commit
       - case content.class.name
       - when 'Grit::Blob'
         = render 'blob', blob: content
