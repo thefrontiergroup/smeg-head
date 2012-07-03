@@ -1,12 +1,12 @@
 require Rails.root.join('spec', 'support', 'blueprints')
 
-# Configure headless.
-require 'headless'
-AfterConfiguration do
-  headless = Headless.new :display => Process.pid
-  headless.start
-  at_exit { headless.destroy }
-end
+# # Configure headless.
+# require 'headless'
+# AfterConfiguration do
+#   headless = Headless.new :display => Process.pid
+#   headless.start
+#   at_exit { headless.destroy }
+# end
 
 # And Warden...
 Warden.test_mode!
