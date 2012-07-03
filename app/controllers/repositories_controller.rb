@@ -8,6 +8,7 @@ class RepositoriesController < ApplicationController
 
   def edit
     authorize! :update, repository
+    render 'users/repositories/edit'
   end
 
   def update
